@@ -1,0 +1,71 @@
+{
+  "colorScheme": "dark",
+  "fonts": [
+    {
+      "family": "IBM Plex Sans",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#0E1628",
+    "accent": "#00C853",
+    "background": "#1A1A1A",
+    "textPrimary": "#1C2333",
+    "link": "#1C2333"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "IBM Plex Sans",
+      "heading": "IBM Plex Sans"
+    },
+    "fontStacks": {
+      "heading": [
+        "IBM Plex Sans",
+        "sans"
+      ],
+      "body": [
+        "IBM Plex Sans",
+        "sans"
+      ],
+      "paragraph": [
+        "IBM Plex Sans",
+        "sans"
+      ]
+    },
+    "fontSizes": {
+      "h1": "24px",
+      "h2": "15px",
+      "body": "16px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "0px"
+  },
+  "components": {
+    "input": {
+      "borderColor": "#CCCCCC",
+      "borderRadius": "0px"
+    }
+  },
+  "images": {
+    "logo": null,
+    "favicon": null,
+    "ogImage": null
+  },
+  "__framework_hints": [],
+  "personality": {
+    "tone": "modern",
+    "energy": "medium",
+    "targetAudience": "tech-savvy individuals and developers"
+  },
+  "designSystem": {
+    "framework": "tailwind",
+    "componentLibrary": "unknown"
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  }
+}
