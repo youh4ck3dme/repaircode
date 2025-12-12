@@ -31,29 +31,30 @@ RepairCode is a cutting-edge web application designed to demonstrate the future 
 
 ## 📦 Installation
 
-1.  Clone the repository:
+1. Clone the repository:
 
-    ```bash
-    git clone https://github.com/youh4ck3dme/repaircode.git
-    cd repaircode
-    ```
+   ```bash
+   git clone https://github.com/youh4ck3dme/repaircode.git
+   cd repaircode
+   ```
 
-2.  Install dependencies:
+2. Install dependencies:
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
-3.  Start the development server:
+3. Start the development server:
 
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
-4.  Build for production:
-    ```bash
-    npm run build
-    ```
+4. Build for production:
+
+   ```bash
+   npm run build
+   ```
 
 ## 🤖 AI Simulation
 
