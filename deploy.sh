@@ -66,7 +66,7 @@ EOF
 # --- 2. Start Services ---
 log "Starting Docker services..."
 docker-compose up -d --force-recreate nginx
-docker-compose up -d app
+docker-compose up -d --build
 
 log "Waiting for Nginx to be ready..."
 sleep 5
@@ -74,7 +74,6 @@ sleep 5
 # --- 3. Request Certificates ---
 log "Requesting Let's Encrypt certificates..."
 docker run --rm \
-  --platform linux/amd64 \
   --pull always \
   -v "${PROJECT_DIR}/letsencrypt:/etc/letsencrypt" \
   -v "${PROJECT_DIR}/certbot-webroot:/var/www/certbot" \
@@ -137,6 +136,16 @@ http {
             proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto \$scheme;
+        }
+
+        # Proxy to API
+        location /api/ {
+            proxy_pass http://api:4000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host \$host;
+            proxy_cache_bypass \$http_upgrade;
         }
     }
 }

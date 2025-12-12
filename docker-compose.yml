@@ -7,7 +7,19 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     expose:
-      - '3000'   # adjust if your app uses a different port
+      - '3000'
+    networks:
+      - webnet
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - '4000'
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     networks:
       - webnet
 
