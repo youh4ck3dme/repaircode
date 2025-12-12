@@ -1,9 +1,5 @@
-import React from "react";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Suspense,
-} from "react-router-dom";
+import React, { Suspense } from "react";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Layout from "./components/Layout";
 
 const Home = React.lazy(() => import("./pages/Home"));
