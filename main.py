@@ -1,1 +1,0 @@
-print("RepairCode project initialized")

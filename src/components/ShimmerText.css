@@ -1,0 +1,71 @@
+:root {
+  --base-color: #00c853;
+  --shimmer-color: #00ff6a;
+  --shimmer-width: 25%;
+  --duration: 2.2s;
+}
+
+.shimmer-text {
+  display: inline-block;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+
+  background: linear-gradient(
+    90deg,
+    var(--base-color) 0%,
+    var(--shimmer-color) calc(50% + var(--shimmer-width) / 2),
+    var(--base-color) 100%
+  );
+
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer var(--duration) linear infinite;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Fallback for browsers that don't support background-clip: text */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .shimmer-text {
+    color: var(--base-color);
+    background: none;
+    -webkit-text-fill-color: initial;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0), 0 0 20px rgba(0, 255, 106, 0.06);
+  }
+}
+
+/* Purple variant for different pages */
+.shimmer-text.purple {
+  --base-color: #8b5cf6;
+  --shimmer-color: #c084fc;
+}
+
+/* Blue variant */
+.shimmer-text.blue {
+  --base-color: #3b82f6;
+  --shimmer-color: #60a5fa;
+}
+
+/* Pink variant */
+.shimmer-text.pink {
+  --base-color: #ec4899;
+  --shimmer-color: #f472b6;
+}
+
+/* Orange variant */
+.shimmer-text.orange {
+  --base-color: #f97316;
+  --shimmer-color: #fb923c;
+}
