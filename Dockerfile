@@ -3,7 +3,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN apk add --no-cache python3 make g++ && \
-    npm install && \
+    npm install --include=optional && \
+    npm install @rollup/rollup-linux-x64-musl --save-optional && \
     npm cache clean --force
 COPY . .
 RUN npm run build
