@@ -1,0 +1,29 @@
+{
+    "type": "object",
+    "properties": {
+        "fixes": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "issueId": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "impact": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "issueId",
+                    "description"
+                ]
+            }
+        }
+    },
+    "required": [
+        "fixes"
+    ]
+}

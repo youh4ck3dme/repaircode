@@ -2,26 +2,28 @@ import { callGemini, patchSchema } from "../llm/gemini.js";
 import { getAnalysis, getFixes, savePatch, setJobStatus } from "../db/client.js";
 import { loadRepoFiles } from "../repo/files.js";
 import { applyPatchesAndBuildZip } from "../patching/patchEngine.js";
+import { callWithRetry } from "../llm/callWithRetry.js";
+import { patchValidate } from "../schema/validate.js";
+import { emitProgress } from "../events/progress.js";
 
 export async function runPatch(jobId) {
     try {
+        await setJobStatus(jobId, "running");
+        emitProgress(jobId, "patch_start", { message: "Generating surgical patches..." });
+
         const analysis = await getAnalysis(jobId);
         const fixes = await getFixes(jobId);
         const files = await loadRepoFiles(jobId);
 
-        const instruction = `You are an AST-aware code transformation engine. Your task is to generate precise, minimal, and safe patch instructions for the provided repository.
+        const instruction = `Si seniorný expert na transformáciu kódu. Tvojou úlohou je vygenerovať presné patchy pre repozitár na základe poskytnutej analýzy a navrhovaných riešení.
 
-Rules for patch generation:
-1. Only generate patches for files that were explicitly provided in the FILES section.
-2. Never invent new files, paths, or directories.
-3. Never modify code outside the specified line ranges.
-4. All line numbers must correspond exactly to the provided file content.
-5. All patches must be minimal — change only what is necessary to implement the fix.
-6. Preserve existing indentation, formatting, and code style.
-7. newCode must contain ONLY valid code — no comments, explanations, or markdown.
-8. If a fix cannot be safely applied, skip it rather than guessing.
-9. Do not merge multiple unrelated changes into a single patch block.
-10. Do not include any text outside the final JSON object.`;
+Pravidlá pre generovanie patchov:
+1. Používaj výhradne poskytnuté súbory.
+2. Generuj len patchy typu insert, delete alebo replace.
+3. Patch musí byť minimálny a zachovávať štýl kódu.
+4. startLine a endLine musia presne sedieť na poskytnutý obsah.
+5. newCode musí byť čistý kód (pri delete prázdny string).
+6. Výstup musí byť striktne JSON podľa schémy.`;
 
         const prompt = `
 ANALYSIS:
@@ -34,15 +36,20 @@ FILES:
 ${files.map(f => `FILE: ${f.path}\n---\n${f.content}`).join("\n\n")}
 `;
 
-        const json = await callGemini(instruction, prompt, patchSchema);
+        const json = await callWithRetry({
+            fn: () => callGemini(instruction, prompt, patchSchema),
+            validate: patchValidate
+        });
 
         await savePatch(jobId, json);
         await applyPatchesAndBuildZip(jobId, files, json);
         await setJobStatus(jobId, "done");
+        emitProgress(jobId, "patch_done", { message: "Repository repaired successfully." });
 
         return true;
     } catch (error) {
         await setJobStatus(jobId, "failed");
+        emitProgress(jobId, "error", { message: `Patching failed: ${error.message}` });
         console.error(`Patch failed for job ${jobId}:`, error);
         throw error;
     }

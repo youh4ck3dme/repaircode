@@ -9,6 +9,7 @@ import { saveZip, loadFixedZip } from "./repo/files.js";
 import { runAnalysis } from "./orchestrators/analysis.js";
 import { runFixes } from "./orchestrators/fixes.js";
 import { runPatch } from "./orchestrators/patch.js";
+import { addListener, removeListener } from "./events/progress.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -22,6 +23,17 @@ app.use(fileUpload({
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'repaircode-api' });
+});
+
+app.get("/events/:jobId", (req, res) => {
+  const { jobId } = req.params;
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+
+  addListener(jobId, res);
+  req.on("close", () => removeListener(jobId, res));
 });
 
 // 1. Upload & Analyze
@@ -56,13 +68,27 @@ app.get('/api/status/:jobId', async (req, res) => {
   }
 });
 
-// 3. Patch Initialization
+// 3. Fix Generation
+app.post('/api/fixes', async (req, res) => {
+  try {
+    const { jobId } = req.body;
+    if (!jobId) return res.status(400).json({ error: "Missing jobId" });
+
+    // Start Fixes Async
+    runFixes(jobId).catch(error => console.error(`Fixes failed for ${jobId}:`, error));
+
+    res.json({ success: true, message: "Fix generation started" });
+  } catch (error) {
+    console.error("Fixes Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 4. Patch Initialization
 app.post('/api/patch', async (req, res) => {
   try {
-    const { jobId, fixes } = req.body;
-    if (!jobId || !fixes) return res.status(400).json({ error: "Missing jobId or fixes" });
-
-    await runFixes(jobId, fixes);
+    const { jobId } = req.body;
+    if (!jobId) return res.status(400).json({ error: "Missing jobId" });
 
     // Start Patching Async
     runPatch(jobId).catch(error => console.error(`Patch failed for ${jobId}:`, error));

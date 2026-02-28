@@ -71,40 +71,83 @@ const LiveCodeOnline = () => {
       });
 
       const { jobId } = await response.json();
-      addLog("system", `Job initialized: ${jobId}. Waiting for AI to analyze...`);
+      addLog("system", `Job initialized: ${jobId}. Establishing real-time event stream...`);
 
-      // Polling for status
-      const poll = async () => {
-        const res = await fetch(`http://localhost:4000/api/status/${jobId}`);
-        const data = await res.json();
+      const es = new EventSource(`http://localhost:4000/events/${jobId}`);
 
-        if (data.status === 'done' && data.analysis) {
-          const { summary, issues: aiIssues } = data.analysis;
-          addLog("Analyzer", summary);
-          setIssues(aiIssues.map(issue => ({
-            ...issue,
-            title: issue.message,
-            description: issue.suggested_fix,
-            jobId: jobId // Keep track of jobId for patching
-          })));
+      es.addEventListener("analysis_start", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Analyzer", data.message);
+      });
 
-          setSimulationStage("completed");
-          setIsAnalyzing(false);
-          addLog("system", "Pipeline complete. Audit finalized.");
-          showToast(t("toast.analysisComplete"), "success");
-        } else if (data.status === 'failed') {
-          throw new Error("AI Analysis failed on server.");
-        } else {
-          // Keep polling
-          setTimeout(poll, 2000);
+      es.addEventListener("analysis_chunk_start", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Analyzer", data.message);
+      });
+
+      es.addEventListener("analysis_done", async () => {
+        addLog("system", "Analysis complete. Now generating proposed fixes...");
+        setSimulationStage("architecture");
+
+        // Fetch issues after analysis is done
+        const statusRes = await fetch(`http://localhost:4000/api/status/${jobId}`);
+        const statusData = await statusRes.json();
+        if (statusData.analysis?.issues) {
+          setIssues(statusData.analysis.issues.map(i => ({ ...i, jobId })));
         }
-      };
 
-      poll();
+        // Trigger Phase 2: Fixes
+        fetch('http://localhost:4000/api/fixes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId })
+        });
+      });
+
+      es.addEventListener("fixes_start", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Factory", data.message);
+      });
+
+      es.addEventListener("fixes_done", async (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Factory", data.message);
+        setSimulationStage("completed");
+        setIsAnalyzing(false);
+        showToast(t("toast.analysisComplete"), "success");
+
+        // Refresh issues with fixes
+        const statusRes = await fetch(`http://localhost:4000/api/status/${jobId}`);
+        const statusData = await statusRes.json();
+        if (statusData.analysis?.issues) {
+          setIssues(statusData.analysis.issues.map(i => ({ ...i, jobId })));
+        }
+      });
+
+      es.addEventListener("patch_start", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Polisher", data.message);
+      });
+
+      es.addEventListener("patch_done", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Polisher", data.message);
+        showToast("Repository repaired successfully!", "success");
+        es.close();
+      });
+
+      es.addEventListener("error", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("error", data.message);
+        setIsAnalyzing(false);
+        setSimulationStage("completed");
+        showToast(`Error: ${data.message}`, "error");
+        es.close();
+      });
 
     } catch (error) {
       console.error("Simulation error:", error);
-      addLog("error", `Analysis failed: ${error.message}`);
+      addLog("error", `Process failed: ${error.message}`);
       setIsAnalyzing(false);
       setSimulationStage("completed");
       showToast(`${t("toast.error")}: ${error.message}`, "error");
@@ -114,28 +157,21 @@ const LiveCodeOnline = () => {
   const handleApplyFix = useCallback(async (issue) => {
     try {
       showToast("Applying fix globally...", "info");
-      addLog("system", `Requesting global patch for issue in ${issue.file}...`);
+      addLog("system", `Requesting global patch via Job ${issue.jobId}...`);
 
       const response = await fetch('http://localhost:4000/api/patch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          jobId: issue.jobId,
-          fixes: [issue]
+          jobId: issue.jobId
         })
       });
 
       const result = await response.json();
-      if (!result.success) throw new Error("Patch failed");
+      if (!result.success) throw new Error("Patch initialization failed");
 
-      addLog("Polisher", `Patch generated and applied for ${issue.file}. Ready for download.`);
-      showToast("Fix applied! You can now download the repaired ZIP.", "success");
-
-      // Update local file content if it was selected
-      if (selectedFile?.path === issue.file) {
-        // In this persistent flow, we'd ideally fetch the updated file content
-        // For simplicity in this demo, we mark it as fixed.
-      }
+      addLog("Polisher", `Patch generation started for Job ${issue.jobId}. We'll notify you when ready.`);
+      showToast("Patching started! We're applying the fixes to the repository.", "success");
 
       setIssues(prev => prev.filter(i => i.id !== issue.id));
 
@@ -143,7 +179,7 @@ const LiveCodeOnline = () => {
       console.error("Apply fix error:", error);
       showToast(`Failed to apply fix: ${error.message}`, "error");
     }
-  }, [addLog, showToast, selectedFile]);
+  }, [addLog, showToast]);
 
 
 

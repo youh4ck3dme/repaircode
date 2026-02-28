@@ -15,17 +15,34 @@ export const analysisSchema = {
                 properties: {
                     id: { type: "string" },
                     file: { type: "string" },
-                    line: { type: "number" },
-                    severity: { type: "string", enum: ["low", "medium", "high", "critical"] },
-                    type: { type: "string", enum: ["security", "performance", "style", "bug"] },
-                    message: { type: "string" },
-                    suggested_fix: { type: "string" }
+                    line: { type: ["integer", "null"] },
+                    severity: { type: "string", enum: ["low", "medium", "high"] },
+                    message: { type: "string" }
                 },
-                required: ["id", "file", "severity", "message", "suggested_fix"]
+                required: ["id", "file", "message", "severity"]
             }
         }
     },
     required: ["summary", "issues"]
+};
+
+export const fixesSchema = {
+    type: "object",
+    properties: {
+        fixes: {
+            type: "array",
+            items: {
+                type: "object",
+                properties: {
+                    issueId: { type: "string" },
+                    description: { type: "string" },
+                    impact: { type: "string" }
+                },
+                required: ["issueId", "description"]
+            }
+        }
+    },
+    required: ["fixes"]
 };
 
 export const patchSchema = {
@@ -43,11 +60,11 @@ export const patchSchema = {
                             type: "object",
                             properties: {
                                 type: { type: "string", enum: ["insert", "delete", "replace"] },
-                                startLine: { type: "number" },
-                                endLine: { type: "number" },
+                                startLine: { type: "integer" },
+                                endLine: { type: ["integer", "null"] },
                                 newCode: { type: "string" }
                             },
-                            required: ["type", "startLine"]
+                            required: ["type", "startLine", "newCode"]
                         }
                     }
                 },

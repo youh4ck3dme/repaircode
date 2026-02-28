@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   Info,
   Sparkles,
-  CheckCircle2,
   Zap
 } from "lucide-react";
 import LoadingSkeleton from "../LoadingSkeleton";
@@ -111,18 +110,25 @@ const AIAnalysisPanel = ({ issues, isAnalyzing, onApplyFix }) => {
                       )}
                     </div>
                   </div>
-                  {(issue.suggestion || issue.suggested_fix) && (
+                  {(issue.fix || issue.suggestion || issue.suggested_fix) && (
                     <div className="mt-3 pt-3 border-t border-white/10">
                       <p className="text-xs text-gray-400 mb-2">
                         💡 {t("analysis.suggestedFix") || "Navrhovaná oprava"}:
                       </p>
-                      <pre className="text-[10px] text-gray-300 font-mono bg-black/20 p-2 rounded border border-white/5 overflow-x-auto">
-                        {issue.suggested_fix || issue.suggestion}
-                      </pre>
+                      <div className="text-[10px] text-gray-300 bg-black/20 p-2 rounded border border-white/5 whitespace-pre-line mb-3">
+                        {issue.fix?.description || issue.suggested_fix || issue.suggestion}
+                      </div>
+
+                      {issue.fix?.impact && (
+                        <p className="text-[10px] text-accent/70 mb-3 font-bold uppercase tracking-tighter">
+                          Dopad: {issue.fix.impact}
+                        </p>
+                      )}
+
                       {onApplyFix && (
                         <button
                           onClick={() => onApplyFix(issue)}
-                          className="mt-3 w-full px-3 py-2 bg-accent text-primary rounded-lg text-xs font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
+                          className="mt-1 w-full px-3 py-2 bg-accent text-primary rounded-lg text-xs font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
                         >
                           <Zap className="w-3 h-3" />
                           {t("analysis.applyFix") || "Aplikovať opravu"}

@@ -1,0 +1,49 @@
+{
+    "type": "object",
+    "properties": {
+        "summary": {
+            "type": "string"
+        },
+        "issues": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "file": {
+                        "type": "string"
+                    },
+                    "line": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "file",
+                    "message",
+                    "severity"
+                ]
+            }
+        }
+    },
+    "required": [
+        "summary",
+        "issues"
+    ]
+}

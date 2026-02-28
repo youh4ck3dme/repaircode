@@ -1,0 +1,56 @@
+{
+    "type": "object",
+    "properties": {
+        "patches": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "string"
+                    },
+                    "changes": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "insert",
+                                        "delete",
+                                        "replace"
+                                    ]
+                                },
+                                "startLine": {
+                                    "type": "integer"
+                                },
+                                "endLine": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "newCode": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "type",
+                                "startLine",
+                                "newCode"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "file",
+                    "changes"
+                ]
+            }
+        }
+    },
+    "required": [
+        "patches"
+    ]
+}

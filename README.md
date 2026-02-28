@@ -1,70 +1,58 @@
-# RepairCode - Premium Code Repair with AI Box
+# RepairCode - Production AI Patching Engine
 
-RepairCode is a cutting-edge web application designed to demonstrate the future of automated code repair. It features a premium, dark-themed UI, smooth Framer Motion animations, and a fully interactive "AI Sandbox" where users can upload codebases for simulated AI analysis and repair.
+RepairCode is a professional-grade AI patching engine designed for deep codebase audits and automated repairs. Transform your repository from "bug-prone" to "production-ready" with a single click.
 
-## 🚀 Features
+## 🚀 Key Improvements (Hybrid Architecture)
 
-- **Multi-Page Architecture**: 7 distinct pages (Home, Services, Process, About, Contact, Audit, LiveCodeOnline).
-- **AI Code Sandbox**:
-  - Drag & drop .zip file support.
-  - Real-time file tree explorer.
-  - Syntax-highlighted code viewer.
-  - **Multi-Agent Simulation**: Visualizes Analyzer, Factory, and Polisher agents working in real-time.
-- **Premium Design**:
-  - Tailwind CSS styling with a custom dark theme.
-  - Glassmorphism effects and animated gradients.
-  - Matrix-style code rain background.
-  - Interactive particle effects.
-- **AI Code Sandbox**:
-  - Drag & drop .zip file support with real-time extraction progress.
-  - Interactive "File Health Dashboard" with color-coded analysis (Green/Orange/Red).
-  - Real-time file tree explorer and syntax-highlighted code viewer.
-  - **5-Stage AI Simulation**: Visualizes a full pipeline: Diagnostics -> Security (SCA) -> Performance -> Architecture -> Repair Plan.
-  - **PR Template Generation**: Automated creation of Pull Request templates for security vulnerabilities.
-  - Live statistics dashboard tracking files, issues, and fixes.
-- **Testing & CI/CD**:
-  - Full unit test suite using **Vitest** and **React Testing Library**.
-  - **Dockerized Architecture**: Ready-to-use Dockerfiles for frontend (Nginx) and backend (Node).
-  - **GitHub Actions**: Automated CI pipeline for linting, testing, and building.
-- **Performance**:
-  - Lazy loading for all page components.
-  - Optimized animations using Framer Motion.
+Previously a stateless demo, RepairCode has been upgraded to a **Production Hybrid Architecture**:
+
+- **Perzistentný Backend (Node.js + SQLite):** Všetky auditové úlohy sú teraz trvalé. Sledujte stav úloh (`pending`, `running`, `done`, `failed`) naprieč reštartami.
+- **Hybridný Stack:** Frontend beží na **Next.js (App Router)** pre rýchle UI, zatiaľ čo náročná AI analýza a ZIP handling prebiehajú na dedikovanom **Node.js serveri**.
+- **Gemini 2.0 Flash Integration:** Využíva najnovší model pre precízny, štruktúrovaný JSON výstup.
+- **Stable Patching Engine:** Pokročilý "AST-aware" prompting zaručuje, že opravy sú minimálne, bezpečné a zachovávajú kódový štýl.
+- **Dockerized Persistence:** Automaticky nakonfigurované Docker zväzky (volumes) pre perzistenciu databázy a repozitárov.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18, Vite 5, Tailwind CSS
-- **Backend (Stub)**: Node.js, Express, Axios
-- **Code Analysis**: PrismJS, react-syntax-highlighter
-- **Testing**: Vitest, Supertest, Testing Library
-- **DevOps**: Docker, Docker Compose, GitHub Actions
-- **Animations & Icons**: Framer Motion, Lucide React
+- **Frontend**: React 18, Next.js (App Router), Tailwind CSS, Framer Motion
+- **Backend**: Node.js (ESM), Express, SQLite3
+- **AI**: Gemini 2.0 Flash (Google Generative AI)
+- **File Handling**: JSZip, adm-zip
+- **Testing**: Vitest, React Testing Library
+- **DevOps**: Docker, Docker Compose, Husky, lint-staged
 
-## 📦 Installation
+## 📦 Inštalácia & Spustenie
 
-1. Clone the repository and install dependencies:
+1. **Klonovanie a závislosti:**
    ```bash
    npm install
    ```
 
-2. Setup environment variables:
-   ```bash
-   cp .env.example .env
+2. **Environmentálne premenné:**
+   Vytvorte súbor `.env` v koreňovom adresári a v `/server` (alebo použite globálny `.env`):
+   ```env
+   GEMINI_API_KEY=your_key_here
+   PORT=4000
    ```
 
-3. Start the full stack (requires two terminals or background):
+3. **Spustenie (Development):**
    ```bash
-   npm run dev      # Start Vite Frontend
-   npm run server   # Start Node Backend
+   npm run dev      # Frontend (Vite/Next)
+   npm run server   # Backend (Node)
    ```
 
-4. Run Tests:
+4. **Spustenie (Docker - Production):**
    ```bash
-   npm run test
+   docker-compose up --build
    ```
 
-## 🤖 AI Simulation
+## 🤖 AI Workflow (LiveCodeOnline)
 
-Check out the `/livecodeonline` page to see the **5-Stage AI Sandbox** in action. Upload a .zip file to watch the specialized agents perform deep codebase diagnostics, security scans (SCA), performance profiling, and generate a final prioritized **Repair Plan** with PR templates.
+Navštívte sekciu **LiveCodeOnline** pre kompletný flow:
+1. **Nahrať (Upload):** Vložte ZIP archív vášho projektu.
+2. **Analyzovať (Audit):** AI vykoná hĺbkovú diagnostiku a navrhne opravy.
+3. **Opraviť (Patch):** Jedným kliknutím aplikujte fixy.
+4. **Stiahnuť (Export):** Získajte opravený projekt ako hotový ZIP.
 
 ## 📄 License
 

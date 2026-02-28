@@ -10,6 +10,10 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./server/db:/app/server/db
+      - ./server/repo:/app/server/repo
 
   frontend:
     build:
