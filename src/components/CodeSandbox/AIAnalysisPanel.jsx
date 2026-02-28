@@ -5,6 +5,7 @@ import {
   Info,
   Sparkles,
   CheckCircle2,
+  Zap
 } from "lucide-react";
 import LoadingSkeleton from "../LoadingSkeleton";
 import { useLanguage } from "../../contexts/LanguageContext";
@@ -79,7 +80,7 @@ const AIAnalysisPanel = ({ issues, isAnalyzing, onApplyFix }) => {
             >
               {issues.map((issue, i) => (
                 <motion.div
-                  key={i}
+                  key={issue.id || i}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
@@ -90,38 +91,46 @@ const AIAnalysisPanel = ({ issues, isAnalyzing, onApplyFix }) => {
                   <div className="flex items-start gap-3 mb-2">
                     {getSeverityIcon(issue.severity)}
                     <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-white mb-1">
-                        {issue.title}
-                      </h4>
+                      <div className="flex justify-between items-start">
+                        <h4 className="text-sm font-semibold text-white mb-1">
+                          {issue.title || issue.message}
+                        </h4>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10 uppercase font-bold">
+                          {issue.type || 'AI Audit'}
+                        </span>
+                      </div>
                       <p className="text-xs text-gray-400 mb-2 whitespace-pre-line">
-                        {issue.description}
+                        {issue.description || issue.message}
                       </p>
                       {issue.file && (
-                        <p className="text-xs text-gray-600">
-                          {issue.file}{issue.line ? `:${issue.line}` : ''}
-                        </p>
+                        <div className="flex items-center gap-2 text-[10px] text-gray-500 font-mono">
+                          <span className="px-1.5 py-0.5 rounded bg-black/30 border border-white/5">
+                            {issue.file}{issue.line ? `:${issue.line}` : ''}
+                          </span>
+                        </div>
                       )}
                     </div>
                   </div>
-                  {issue.suggestion && (
+                  {(issue.suggestion || issue.suggested_fix) && (
                     <div className="mt-3 pt-3 border-t border-white/10">
                       <p className="text-xs text-gray-400 mb-2">
-                        💡 Návrh / Príkaz opravy:
+                        💡 {t("analysis.suggestedFix") || "Navrhovaná oprava"}:
                       </p>
-                      <p className="text-xs text-gray-300 font-mono bg-black/20 p-2 rounded border border-white/5">
-                        {issue.suggestion}
-                      </p>
+                      <pre className="text-[10px] text-gray-300 font-mono bg-black/20 p-2 rounded border border-white/5 overflow-x-auto">
+                        {issue.suggested_fix || issue.suggestion}
+                      </pre>
                       {onApplyFix && (
                         <button
                           onClick={() => onApplyFix(issue)}
-                          className="mt-2 px-3 py-1 bg-accent/20 text-accent rounded text-xs font-semibold hover:bg-accent/30 transition-colors flex items-center gap-1"
+                          className="mt-3 w-full px-3 py-2 bg-accent text-primary rounded-lg text-xs font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
                         >
-                          <CheckCircle2 className="w-3 h-3" />
-                          {t("analysis.applyFix")}
+                          <Zap className="w-3 h-3" />
+                          {t("analysis.applyFix") || "Aplikovať opravu"}
                         </button>
                       )}
                     </div>
                   )}
+
 
                   {issue.prTemplate && (
                     <div className="mt-4 pt-3 border-t border-white/10">

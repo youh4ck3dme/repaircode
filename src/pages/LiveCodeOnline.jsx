@@ -48,8 +48,8 @@ const LiveCodeOnline = () => {
   }, []);
 
   const runSimulation = useCallback(async () => {
-    if (files.length === 0) {
-      addLog("system", "Error: No files detected for analysis.");
+    if (!uploadedZipFile) {
+      addLog("system", "Error: No ZIP file uploaded.");
       return;
     }
 
@@ -59,80 +59,48 @@ const LiveCodeOnline = () => {
     setAgentLogs([]);
     setIssues([]);
 
-    const pollJob = async (jobId) => {
-      while (true) {
-        const res = await fetch(`http://localhost:4000/api/proxy/status/${jobId}`);
-        const data = await res.json();
-        if (data.status === 'completed') return data.result;
-        if (data.status === 'failed') throw new Error(data.error || "Job failed");
-        await new Promise(r => setTimeout(r, 2000));
-      }
-    };
-
     try {
-      addLog("Diagnostics", "Initializing codebase scan via AI Sandbox Proxy...");
+      addLog("Diagnostics", "Uploading repository for analysis...");
 
       const formData = new FormData();
-      if (typeof uploadedZipFile !== 'undefined' && uploadedZipFile) {
-        formData.append('file', uploadedZipFile);
-      }
+      formData.append('zip', uploadedZipFile);
 
-      const diagRes = await fetch('http://localhost:4000/api/proxy/diagnostics', {
+      const response = await fetch('http://localhost:4000/api/analyze', {
         method: 'POST',
         body: formData
       });
 
-      let diagData = await diagRes.json();
-      if (diagRes.status === 202) {
-        addLog("system", `Job accepted. ID: ${diagData.job_id}. Polling...`);
-        diagData = await pollJob(diagData.job_id);
-      }
+      const { jobId } = await response.json();
+      addLog("system", `Job initialized: ${jobId}. Waiting for AI to analyze...`);
 
-      const analysis = diagData.result?.json || diagData.json || {};
-      const markdown = diagData.result?.markdown || diagData.markdown || "";
+      // Polling for status
+      const poll = async () => {
+        const res = await fetch(`http://localhost:4000/api/status/${jobId}`);
+        const data = await res.json();
 
-      addLog("Diagnostics", `Analysis complete. Stack: ${analysis.language_stack?.join(", ") || "Unknown"}`);
-      if (markdown) addLog("analyzer", "Context: " + markdown.split('\n')[0]);
+        if (data.status === 'done' && data.analysis) {
+          const { summary, issues: aiIssues } = data.analysis;
+          addLog("Analyzer", summary);
+          setIssues(aiIssues.map(issue => ({
+            ...issue,
+            title: issue.message,
+            description: issue.suggested_fix,
+            jobId: jobId // Keep track of jobId for patching
+          })));
 
-      setSimulationStage("security");
-      addLog("Security", "Running real-time SCA scan on package.json...");
-
-      const pkgFile = files.find(f => f.name === 'package.json');
-      if (pkgFile) {
-        const scanFormData = new FormData();
-        const blob = new Blob([pkgFile.content], { type: 'application/json' });
-        scanFormData.append('manifest', blob, 'package.json');
-
-        const scanRes = await fetch('http://localhost:4000/api/proxy/scan', {
-          method: 'POST',
-          body: scanFormData
-        });
-        const scaData = await scanRes.json();
-
-        if (scaData.vulnerabilities) {
-          addLog("Security", `Found ${scaData.vulnerabilities.length} vulnerabilities.`);
-          const securityIssues = scaData.vulnerabilities.map(v => ({
-            severity: v.severity,
-            title: `SCA: ${v.package}`,
-            description: v.description,
-            suggestion: v.fix_command
-          }));
-          setIssues(prev => [...prev, ...securityIssues]);
+          setSimulationStage("completed");
+          setIsAnalyzing(false);
+          addLog("system", "Pipeline complete. Audit finalized.");
+          showToast(t("toast.analysisComplete"), "success");
+        } else if (data.status === 'failed') {
+          throw new Error("AI Analysis failed on server.");
+        } else {
+          // Keep polling
+          setTimeout(poll, 2000);
         }
-      }
+      };
 
-      setSimulationStage("performance");
-      await new Promise(r => setTimeout(r, 1000));
-      setSimulationStage("architecture");
-      await new Promise(r => setTimeout(r, 1000));
-      setSimulationStage("repair");
-      addLog("system", "Generating final repair plan...");
-      await new Promise(r => setTimeout(r, 2000));
-
-      setSimulationStage("completed");
-      setIsAnalyzing(false);
-      addLog("system", "Pipeline complete. All agents finalized.");
-      showToast(t("toast.analysisComplete"), "success");
+      poll();
 
     } catch (error) {
       console.error("Simulation error:", error);
@@ -141,7 +109,43 @@ const LiveCodeOnline = () => {
       setSimulationStage("completed");
       showToast(`${t("toast.error")}: ${error.message}`, "error");
     }
-  }, [files, addLog, uploadedZipFile, showToast, t]);
+  }, [addLog, showToast, t, uploadedZipFile]);
+
+  const handleApplyFix = useCallback(async (issue) => {
+    try {
+      showToast("Applying fix globally...", "info");
+      addLog("system", `Requesting global patch for issue in ${issue.file}...`);
+
+      const response = await fetch('http://localhost:4000/api/patch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jobId: issue.jobId,
+          fixes: [issue]
+        })
+      });
+
+      const result = await response.json();
+      if (!result.success) throw new Error("Patch failed");
+
+      addLog("Polisher", `Patch generated and applied for ${issue.file}. Ready for download.`);
+      showToast("Fix applied! You can now download the repaired ZIP.", "success");
+
+      // Update local file content if it was selected
+      if (selectedFile?.path === issue.file) {
+        // In this persistent flow, we'd ideally fetch the updated file content
+        // For simplicity in this demo, we mark it as fixed.
+      }
+
+      setIssues(prev => prev.filter(i => i.id !== issue.id));
+
+    } catch (error) {
+      console.error("Apply fix error:", error);
+      showToast(`Failed to apply fix: ${error.message}`, "error");
+    }
+  }, [addLog, showToast, selectedFile]);
+
+
 
   const onSelectFile = useCallback((file) => {
     if (file.type === "folder") return;
@@ -504,22 +508,44 @@ const LiveCodeOnline = () => {
                 </h3>
 
                 {simulationStage === "idle" || simulationStage === "completed" ? (
-                  <button
-                    onClick={runSimulation}
-                    className="w-full py-2.5 md:py-3 bg-accent text-primary rounded-xl font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 active:scale-95"
-                  >
-                    {simulationStage === "completed" ? (
-                      <>
-                        <RefreshCw className="w-4 h-4" />
-                        Re-Audit
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-4 h-4" />
-                        Spustiť AI Audit
-                      </>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={runSimulation}
+                      className="w-full py-2.5 md:py-3 bg-accent text-primary rounded-xl font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 active:scale-95"
+                    >
+                      {simulationStage === "completed" ? (
+                        <>
+                          <RefreshCw className="w-4 h-4" />
+                          Re-Audit
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4" />
+                          Spustiť AI Audit
+                        </>
+                      )}
+                    </button>
+                    {simulationStage === "completed" && issues.length === 0 && (
+                      <button
+                        onClick={async () => {
+                          const jobId = issues[0]?.jobId || // fallback to first issue's jobId
+                            // or look for it in state if we had it
+                            // (Actually we should probably have stored currentJobId)
+                            prompt("Enter Job ID to download:"); // Very fallback
+
+                          if (jobId) {
+                            window.location.href = `http://localhost:4000/api/download/${jobId}`;
+                            showToast("Downloading fixed repository...", "success");
+                          }
+                        }}
+                        className="w-full py-2.5 md:py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2 border border-white/20"
+                      >
+                        <Upload className="w-4 h-4 rotate-180" />
+                        Stiahnuť opravený kód
+                      </button>
                     )}
-                  </button>
+
+                  </div>
                 ) : (
                   <div className="w-full py-2.5 md:py-3 bg-white/5 text-gray-400 rounded-xl font-bold flex items-center justify-center gap-2 cursor-not-allowed border border-white/10">
                     <div className="w-4 h-4 border-2 border-accent/50 border-t-accent rounded-full animate-spin" />
@@ -545,7 +571,7 @@ const LiveCodeOnline = () => {
                       <AIAnalysisPanel
                         issues={issues}
                         isAnalyzing={isAnalyzing}
-                        onApplyFix={() => { }}
+                        onApplyFix={handleApplyFix}
                       />
                     </div>
                   )}

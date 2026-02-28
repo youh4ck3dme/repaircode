@@ -16,59 +16,43 @@ test('GET /health endpoint returns ok status', async () => {
     expect(res.body).toHaveProperty('status', 'ok');
 });
 
-test('POST /api/pipeline handles requests in simulation mode', async () => {
-    // We send a mock request to the pipeline endpoint
+test('POST /api/analyze endpoint initializes a job', async () => {
     const res = await request(app)
-        .post('/api/pipeline')
-        .send({ files: [], stage: 'analyzer' });
+        .post('/api/analyze')
+        .attach('zip', Buffer.from('PK\x03\x04'), 'empty.zip'); // Mock minimal ZIP
 
     expect(res.status).toBe(200);
-    // It should either return a simulation response or a success based on API key presence
-    if (res.body.simulation) {
-        expect(res.body.message).toContain('API Key missing');
-    } else {
-        expect(res.body).toHaveProperty('success', true);
-    }
+    expect(res.body).toHaveProperty('success', true);
+    expect(res.body).toHaveProperty('jobId');
 });
 
-/* global Buffer */
-test('POST /api/sandbox/diagnostics endpoint returns expected keys', async () => {
-    const res = await request(app)
-        .post('/api/sandbox/diagnostics')
-        .attach('file', Buffer.from(''), 'dummy.zip');
+test('GET /api/status/:jobId returns job progress', async () => {
+    // 1. Create a job
+    const createRes = await request(app)
+        .post('/api/analyze')
+        .attach('zip', Buffer.from('PK\x03\x04'), 'empty.zip');
 
+    const { jobId } = createRes.body;
+
+    // 2. Check status
+    const res = await request(app).get(`/api/status/${jobId}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('language_stack');
-    expect(res.body).toHaveProperty('five_key_files_to_review');
+    expect(['pending', 'running', 'done', 'failed']).toContain(res.body.status);
 });
 
-test('POST /api/sandbox/scan returns vulnerability scan results', async () => {
-    const res = await request(app).post('/api/sandbox/scan');
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('vulnerabilities');
-    expect(res.body.summary).toHaveProperty('total_vulns');
-});
+test('POST /api/patch handles patching requests', async () => {
+    // 1. Create a job
+    const createRes = await request(app)
+        .post('/api/analyze')
+        .attach('zip', Buffer.from('PK\x03\x04'), 'empty.zip');
 
-test('POST /api/pipeline handles factory stage', async () => {
-    const res = await request(app)
-        .post('/api/pipeline')
-        .send({ files: [], stage: 'factory' });
-    expect(res.status).toBe(200);
-    if (res.body.simulation) {
-        expect(res.body.message).toContain('API Key missing');
-    } else {
-        expect(res.body.success).toBe(true);
-    }
-});
+    const { jobId } = createRes.body;
 
-test('POST /api/pipeline handles polisher stage', async () => {
+    // 2. Request patch
     const res = await request(app)
-        .post('/api/pipeline')
-        .send({ files: [], stage: 'polisher' });
+        .post('/api/patch')
+        .send({ jobId, fixes: [] });
+
     expect(res.status).toBe(200);
-    if (res.body.simulation) {
-        expect(res.body.message).toContain('API Key missing');
-    } else {
-        expect(res.body.success).toBe(true);
-    }
+    expect(res.body).toHaveProperty('success', true);
 });

@@ -45,7 +45,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.node,
-      sourceType: "commonjs",
+      sourceType: "module",
     },
     rules: {
       ...js.configs.recommended.rules,

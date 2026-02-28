@@ -1,76 +1,93 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+import express from "express";
+import cors from "cors";
+import fileUpload from "express-fileupload";
+import path from "path";
+import { fileURLToPath } from 'url';
 
+import { createJob, getJobStatus, getAnalysis } from "./db/client.js";
+import { saveZip, loadFixedZip } from "./repo/files.js";
+import { runAnalysis } from "./orchestrators/analysis.js";
+import { runFixes } from "./orchestrators/fixes.js";
+import { runPatch } from "./orchestrators/patch.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 4000;
-const sandboxRoutes = require('./routes/sandbox');
-const sandboxProxy = require('./routes/sandbox.proxy');
 
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use('/api/sandbox', sandboxRoutes);
-app.use('/api/proxy', sandboxProxy);
-
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "API_KEY_MISSING");
-
-// Models
-const getModel = (instruction) => {
-  return genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    systemInstruction: instruction,
-  });
-};
+app.use(express.json({ limit: '100mb' }));
+app.use(fileUpload({
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+}));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'repaircode-api' });
 });
 
-app.post('/api/pipeline', async (req, res) => {
+// 1. Upload & Analyze
+app.post('/api/analyze', async (req, res) => {
   try {
-    const { files, stage } = req.body;
+    const zip = req.files?.zip;
+    if (!zip) return res.status(400).json({ error: "Missing ZIP file" });
 
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "API_KEY_MISSING") {
-      // Fallback for simulation if no key provided
-      return res.json({
-        simulation: true,
-        message: "API Key missing, running in simulation mode."
-      });
-    }
+    const jobId = await createJob();
+    await saveZip(jobId, zip.data);
 
-    let responseText = "";
+    // Start Analysis Async (Fire and Forget)
+    runAnalysis(jobId).catch(error => console.error(`Job ${jobId} failed:`, error));
 
-    if (stage === 'analyzer') {
-      const model = getModel("You are a code auditor. Analyze the provided file structure and content. Output a JSON object with 'critical', 'high', 'medium', 'low' file lists and a 'summary'.");
-      const result = await model.generateContent(`Analyze these files: ${JSON.stringify(files)}`);
-      responseText = result.response.text();
-    } else if (stage === 'factory') {
-      const model = getModel("You are a code refactoring expert. Refactor the provided code to be modern, secure, and performant. Output the refactored code.");
-      const result = await model.generateContent(`Refactor: ${JSON.stringify(files)}`);
-      responseText = result.response.text();
-    } else if (stage === 'polisher') {
-      const model = getModel("You are a code stylist. Add JSDoc, fix formatting, and ensure code quality. Output the polished code.");
-      const result = await model.generateContent(`Polish: ${JSON.stringify(files)}`);
-      responseText = result.response.text();
-    }
-
-    res.json({
-      success: true,
-      data: responseText
-    });
-
+    res.json({ success: true, jobId });
   } catch (error) {
-    console.error("Pipeline Error:", error);
+    console.error("Analyze Error:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+// 2. Status Polling
+app.get('/api/status/:jobId', async (req, res) => {
+  try {
+    const job = await getJobStatus(req.params.jobId);
+    if (!job) return res.status(404).json({ error: "Job not found" });
 
-module.exports = app;
+    const analysis = await getAnalysis(req.params.jobId);
+    res.json({ status: job.status, analysis });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 3. Patch Initialization
+app.post('/api/patch', async (req, res) => {
+  try {
+    const { jobId, fixes } = req.body;
+    if (!jobId || !fixes) return res.status(400).json({ error: "Missing jobId or fixes" });
+
+    await runFixes(jobId, fixes);
+
+    // Start Patching Async
+    runPatch(jobId).catch(error => console.error(`Patch failed for ${jobId}:`, error));
+
+    res.json({ success: true, message: "Patching started" });
+  } catch (error) {
+    console.error("Patch Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 4. Download Final ZIP
+app.get('/api/download/:jobId', async (req, res) => {
+  try {
+    const buffer = await loadFixedZip(req.params.jobId);
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", `attachment; filename="repaircode-fixed-${req.params.jobId}.zip"`);
+    res.send(buffer);
+  } catch {
+    res.status(404).send("Fixed archive not found or not yet generated.");
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Production Backend running on port ${PORT} (ESM Mode)`);
+});
+
+export default app;
