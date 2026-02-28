@@ -64,7 +64,7 @@ const FileTreeItem = ({
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
-        className={`flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${isSelected ? "bg-accent/10 text-accent font-semibold" : "text-gray-300"
+        className={`flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${isSelected ? "bg-accent/10 text-white font-semibold" : "text-gray-300"
           }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
         onClick={() => {

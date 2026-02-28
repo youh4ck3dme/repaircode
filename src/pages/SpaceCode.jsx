@@ -128,14 +128,13 @@ export default function SpaceCode() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background text-white overflow-x-hidden">
+    <div className="relative min-h-screen text-white overflow-x-hidden">
 
       {/* ── Fixed space background ────────────────────────── */}
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10"
         style={{ backgroundImage: "url('/wall.jpg')" }}
       />
-      <div className="fixed inset-0 bg-[#0F1115]/75 -z-10" />
 
       {/* ── Circuit pulse overlay ─────────────────────────── */}
       <div

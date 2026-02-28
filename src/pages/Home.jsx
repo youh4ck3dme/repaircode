@@ -59,7 +59,7 @@ const Hero = () => {
               className="px-8 py-4 bg-accent text-black rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Zap className="w-5 h-5" />
-              Vyskúšajte AI Sandbox
+              Získať bezplatný audit
             </Link>
             <Link
               to="/process"
