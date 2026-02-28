@@ -4,7 +4,7 @@ import fileUpload from "express-fileupload";
 import path from "path";
 import { fileURLToPath } from 'url';
 
-import { createJob, getJobStatus, getAnalysis } from "./db/client.js";
+import { createJob, getJobStatus, getAnalysis, getFixes } from "./db/client.js";
 import { saveZip, loadFixedZip } from "./repo/files.js";
 import { runAnalysis } from "./orchestrators/analysis.js";
 import { runFixes } from "./orchestrators/fixes.js";
@@ -62,7 +62,8 @@ app.get('/api/status/:jobId', async (req, res) => {
     if (!job) return res.status(404).json({ error: "Job not found" });
 
     const analysis = await getAnalysis(req.params.jobId);
-    res.json({ status: job.status, analysis });
+    const fixes = await getFixes(req.params.jobId);
+    res.json({ status: job.status, analysis, fixes });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -109,18 +109,22 @@ const LiveCodeOnline = () => {
         addLog("Factory", data.message);
       });
 
-      es.addEventListener("fixes_done", async (e) => {
-        const data = JSON.parse(e.data);
-        addLog("Factory", data.message);
+      es.addEventListener("fixes_done", async () => {
+        addLog("Factory", "Fixes generated. Review the repair plan below.");
         setSimulationStage("completed");
         setIsAnalyzing(false);
         showToast(t("toast.analysisComplete"), "success");
 
-        // Refresh issues with fixes
+        // Refresh issues and MERGE with fixes
         const statusRes = await fetch(`http://localhost:4000/api/status/${jobId}`);
         const statusData = await statusRes.json();
-        if (statusData.analysis?.issues) {
-          setIssues(statusData.analysis.issues.map(i => ({ ...i, jobId })));
+
+        if (statusData.analysis?.issues && statusData.fixes?.fixes) {
+          const mergedIssues = statusData.analysis.issues.map(issue => {
+            const fix = statusData.fixes.fixes.find(f => f.issueId === issue.id);
+            return { ...issue, fix, jobId };
+          });
+          setIssues(mergedIssues);
         }
       });
 
