@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      mcp:
+        image: node:20
+        ports: ['4000:4000']
+        options: >-
+          --health-cmd "node -e 'console.log(\"ok\")'"
+          --health-interval 10s
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run unit tests (frontend + backend)
+        env:
+          CI: true
+        run: npm run test:coverage
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Docker images (MCP server)
+        run: docker build -t livecode-mcp-server:ci ./server
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage

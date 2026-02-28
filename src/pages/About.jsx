@@ -6,27 +6,27 @@ const About = () => {
   const values = [
     {
       icon: Code2,
-      title: "Code Excellence",
+      title: "Excelentnosť kódu",
       description:
-        "We believe in writing clean, maintainable code that stands the test of time.",
+        "Veríme v písanie čistého, udržiavateľného kódu, ktorý obstojí v skúške času.",
     },
     {
       icon: Users,
-      title: "Client Partnership",
+      title: "Partnerstvo s klientom",
       description:
-        "Your success is our success. We work as an extension of your team.",
+        "Váš úspech je náš úspech. Pracujeme ako rozšírenie vášho tímu.",
     },
     {
       icon: Target,
-      title: "Results Driven",
+      title: "Orientácia na výsledky",
       description:
-        "We focus on measurable outcomes: faster performance, fewer bugs, happier developers.",
+        "Zameriavame sa na merateľné výsledky: vyšší výkon, menej chýb, spokojnejší vývojári.",
     },
     {
       icon: Zap,
-      title: "Innovation First",
+      title: "Inovácia na prvom mieste",
       description:
-        "We leverage cutting-edge AI and automation to deliver faster, smarter solutions.",
+        "Využívame špičkovú AI a automatizáciu na dodávanie rýchlejších a inteligentnejších riešení.",
     },
   ];
 
@@ -46,11 +46,11 @@ const About = () => {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              About <ShimmerText className="pink">RepairCode</ShimmerText>
+              O <ShimmerText className="pink">RepairCode</ShimmerText>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              We&apos;re on a mission to eliminate technical debt and empower
-              development teams to ship faster.
+              Naším poslaním je eliminácia technického dlhu a pomoc vývojárskym
+              tímom dodávať rýchlejšie.
             </p>
           </motion.div>
         </div>
@@ -65,23 +65,22 @@ const About = () => {
             viewport={{ once: true }}
             className="prose prose-invert max-w-none"
           >
-            <h2 className="text-3xl font-bold text-white mb-6">Our Story</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">Náš príbeh</h2>
             <p className="text-gray-400 text-lg leading-relaxed mb-4">
-              RepairCode was founded by a team of senior engineers who spent
-              years battling legacy codebases at Fortune 500 companies. We saw
-              talented developers waste countless hours debugging ancient code
-              instead of building new features.
+              RepairCode založil tím senior inžinierov, ktorí strávili roky bojom
+              so zastaranými kódovými základňami vo Fortune 500 spoločnostiach. Videli
+              sme talentovaných vývojárov strácať nespočetné hodiny ladením starého kódu
+              namiesto tvorby nových funkcií.
             </p>
             <p className="text-gray-400 text-lg leading-relaxed mb-4">
-              We knew there had to be a better way. By combining AI-powered
-              analysis with expert human engineering, we created a systematic
-              approach to modernizing legacy systems without the risk of
-              traditional rewrites.
+              Vedeli sme, že musí existovať lepší spôsob. Kombináciou AI analýzy
+              s odborným ľudským inžinierstvom sme vytvorili systematický prístup
+              k modernizácii zastaraných systémov bez rizika tradičných prepisov.
             </p>
             <p className="text-gray-400 text-lg leading-relaxed">
-              Today, we&apos;ve helped over 50 companies transform their
-              codebases, eliminating millions of lines of technical debt and
-              unlocking developer productivity.
+              Dnes sme pomohli viac ako 50 spoločnostiam transformovať ich
+              kódové základne, eliminovať milióny riadkov technického dlhu a
+              odomknúť produktivitu vývojárov.
             </p>
           </motion.div>
         </div>
@@ -91,9 +90,9 @@ const About = () => {
       <div className="py-20 bg-surface/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">Our Values</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Naše hodnoty</h2>
             <p className="text-gray-400 text-lg">
-              The principles that guide everything we do
+              Zásady, ktoré riadia všetko, čo robíme
             </p>
           </div>
 
@@ -125,10 +124,10 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { label: "Years Experience", value: "10+" },
-              { label: "Projects Completed", value: "50+" },
-              { label: "Lines Modernized", value: "1.2M+" },
-              { label: "Client Satisfaction", value: "99%" },
+              { label: "Rokov skúseností", value: "10+" },
+              { label: "Dokončených projektov", value: "50+" },
+              { label: "Modernizovaných riadkov", value: "1.2M+" },
+              { label: "Spokojnosť klientov", value: "99%" },
             ].map((stat, i) => (
               <motion.div
                 key={i}

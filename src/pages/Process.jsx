@@ -38,7 +38,7 @@ const ProcessStep = ({
       {/* Content */}
       <div className="flex-1 pb-16">
         <div className="inline-block px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-bold mb-3">
-          Step {number}
+          Krok {number}
         </div>
         <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
         <p className="text-gray-400 text-lg mb-4">{description}</p>
@@ -59,79 +59,79 @@ const Process = () => {
   const steps = [
     {
       icon: Upload,
-      title: "Diagnostic Upload",
+      title: "Diagnostické nahranie",
       description:
-        "Share your codebase securely and we'll begin the analysis process.",
+        "Bezpečne zdieľajte svoju kódovú základňu a my začneme proces analýzy.",
       details: [
-        "Upload via our AI Sandbox or secure file transfer",
-        "NDA & confidentiality agreement signing",
-        "Initial codebase structure analysis",
-        "Technology stack identification",
+        "Nahranie cez náš AI Sandbox alebo bezpečný prenos súborov",
+        "Podpis NDA a dohody o mlčanlivosti",
+        "Počiatočná analýza štruktúry kódovej základne",
+        "Identifikácia technologického stacku",
       ],
     },
     {
       icon: Search,
-      title: "Deep Analysis",
+      title: "Hĺbková analýza",
       description:
-        "Our AI and expert engineers analyze your code for issues, vulnerabilities, and optimization opportunities.",
+        "Naša AI a expert inžinieri analyzujú váš kód na problémy, zraniteľnosti a možnosti optimalizácie.",
       details: [
-        "Automated vulnerability scanning",
-        "Code quality metrics & complexity analysis",
-        "Performance bottleneck identification",
-        "Architecture review & recommendations",
-        "Technical debt assessment",
+        "Automatizované skenovanie zraniteľností",
+        "Metriky kvality kódu a analýza komplexnosti",
+        "Identifikácia výkonnostných úzkych hrdiel",
+        "Revízia architektúry a odporúčania",
+        "Posúdenie technického dlhu",
       ],
     },
     {
       icon: FileText,
-      title: "Repair Plan",
+      title: "Plán opravy",
       description:
-        "Receive a detailed roadmap with prioritized fixes, timeline, and cost estimates.",
+        "Získajte podrobnú cestovnú mapu s prioritizovanými opravami, časovým harmonogramom a odhadmi nákladov.",
       details: [
-        "Comprehensive audit report",
-        "Prioritized issue list (Critical → Low)",
-        "Estimated timeline & milestones",
-        "Cost breakdown & pricing options",
-        "Risk assessment & mitigation strategies",
+        "Komplexná správa auditu",
+        "Prioritizovaný zoznam problémov (Kritické → Nízke)",
+        "Odhadovaný harmonogram a míľniky",
+        "Rozčlenenie nákladov a cenové možnosti",
+        "Posúdenie rizík a stratégie zmierňovania",
       ],
     },
     {
       icon: Code2,
-      title: "Implementation",
+      title: "Implementácia",
       description:
-        "Our team implements the repairs with continuous progress tracking and code reviews.",
+        "Náš tím implementuje opravy s priebežným sledovaním pokroku a kontrolou kódu.",
       details: [
-        "Dedicated engineer assignment",
-        "Daily progress updates & standups",
-        "Live code repair tracking (via /livecodeonline)",
-        "Continuous integration & testing",
-        "Code review & quality assurance",
+        "Priradenie dedikovaného inžiniera",
+        "Denné aktualizácie pokroku a standupy",
+        "Sledovanie opravy kódu naživo (cez /livecodeonline)",
+        "Kontinuálna integrácia a testovanie",
+        "Kontrola kódu a zabezpečenie kvality",
       ],
     },
     {
       icon: TestTube,
-      title: "Testing & Validation",
+      title: "Testovanie a validácia",
       description:
-        "Rigorous testing ensures all repairs work correctly and don't introduce regressions.",
+        "Dôsledné testovanie zabezpečuje správnu funkčnosť všetkých opráv bez zavedenia regresií.",
       details: [
-        "Automated unit & integration tests",
-        "End-to-end testing scenarios",
-        "Performance benchmarking",
-        "Security penetration testing",
-        "User acceptance testing (UAT)",
+        "Automatizované unit a integračné testy",
+        "Scenáre testovania end-to-end",
+        "Výkonnostný benchmarking",
+        "Bezpečnostné penetračné testovanie",
+        "Akceptačné testovanie používateľom (UAT)",
       ],
     },
     {
       icon: Package,
-      title: "Delivery & Handoff",
+      title: "Dodanie a odovzdanie",
       description:
-        "Receive your modernized codebase with complete documentation and ongoing support.",
+        "Získajte modernizovanú kódovú základňu s kompletnou dokumentáciou a priebežnou podporou.",
       details: [
-        "Clean, documented code delivery",
-        "Migration guide & runbook",
-        "Team training & knowledge transfer",
-        "30-day post-launch support",
-        "Maintenance & monitoring setup",
+        "Dodanie čistého, dokumentovaného kódu",
+        "Príručka migrácie a runbook",
+        "Školenie tímu a odovzdanie znalostí",
+        "30-dňová podpora po spustení",
+        "Nastavenie údržby a monitorovania",
       ],
     },
   ];
@@ -152,11 +152,11 @@ const Process = () => {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Our <ShimmerText className="blue">Process</ShimmerText>
+              Náš <ShimmerText className="blue">postup</ShimmerText>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              A proven 6-step methodology to transform your legacy codebase into
-              a modern, high-performance application.
+              Osvedčená 6-kroková metodológia na transformáciu zastaraného kódu
+              na modernú, výkonnú aplikáciu.
             </p>
           </motion.div>
         </div>
@@ -175,17 +175,17 @@ const Process = () => {
       <div className="py-20 bg-surface/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            See it in action
+            Pozrite si to v akcii
           </h2>
           <p className="text-xl text-gray-400 mb-8">
-            Try our AI Code Repair Sandbox and watch the magic happen in
-            real-time.
+            Vyskúšajte náš AI Sandbox na opravu kódu a sledujte kúzlo
+            v reálnom čase.
           </p>
           <a
             href="/livecodeonline"
             className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105"
           >
-            Launch AI Sandbox
+            Spustiť AI Sandbox
             <ArrowRight className="w-5 h-5" />
           </a>
         </div>

@@ -10,55 +10,61 @@ RepairCode is a cutting-edge web application designed to demonstrate the future 
   - Real-time file tree explorer.
   - Syntax-highlighted code viewer.
   - **Multi-Agent Simulation**: Visualizes Analyzer, Factory, and Polisher agents working in real-time.
-  - Live statistics dashboard.
 - **Premium Design**:
   - Tailwind CSS styling with a custom dark theme.
   - Glassmorphism effects and animated gradients.
   - Matrix-style code rain background.
   - Interactive particle effects.
+- **AI Code Sandbox**:
+  - Drag & drop .zip file support with real-time extraction progress.
+  - Interactive "File Health Dashboard" with color-coded analysis (Green/Orange/Red).
+  - Real-time file tree explorer and syntax-highlighted code viewer.
+  - **5-Stage AI Simulation**: Visualizes a full pipeline: Diagnostics -> Security (SCA) -> Performance -> Architecture -> Repair Plan.
+  - **PR Template Generation**: Automated creation of Pull Request templates for security vulnerabilities.
+  - Live statistics dashboard tracking files, issues, and fixes.
+- **Testing & CI/CD**:
+  - Full unit test suite using **Vitest** and **React Testing Library**.
+  - **Dockerized Architecture**: Ready-to-use Dockerfiles for frontend (Nginx) and backend (Node).
+  - **GitHub Actions**: Automated CI pipeline for linting, testing, and building.
 - **Performance**:
   - Lazy loading for all page components.
   - Optimized animations using Framer Motion.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18, Vite 5
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **Routing**: React Router DOM v6
-- **File Handling**: JSZip, react-dropzone
-- **Icons**: Lucide React
+- **Frontend**: React 18, Vite 5, Tailwind CSS
+- **Backend (Stub)**: Node.js, Express, Axios
+- **Code Analysis**: PrismJS, react-syntax-highlighter
+- **Testing**: Vitest, Supertest, Testing Library
+- **DevOps**: Docker, Docker Compose, GitHub Actions
+- **Animations & Icons**: Framer Motion, Lucide React
 
 ## 📦 Installation
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/youh4ck3dme/repaircode.git
-   cd repaircode
-   ```
-
-2. Install dependencies:
-
+1. Clone the repository and install dependencies:
    ```bash
    npm install
    ```
 
-3. Start the development server:
-
+2. Setup environment variables:
    ```bash
-   npm run dev
+   cp .env.example .env
    ```
 
-4. Build for production:
-
+3. Start the full stack (requires two terminals or background):
    ```bash
-   npm run build
+   npm run dev      # Start Vite Frontend
+   npm run server   # Start Node Backend
+   ```
+
+4. Run Tests:
+   ```bash
+   npm run test
    ```
 
 ## 🤖 AI Simulation
 
-Check out the `/livecodeonline` page to see the **Multi-Agent System** in action. Upload a .zip file (or use the demo upload) to watch the AI agents analyze, refactor, and polish your code in a visual, terminal-style interface.
+Check out the `/livecodeonline` page to see the **5-Stage AI Sandbox** in action. Upload a .zip file to watch the specialized agents perform deep codebase diagnostics, security scans (SCA), performance profiling, and generate a final prioritized **Repair Plan** with PR templates.
 
 ## 📄 License
 

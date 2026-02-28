@@ -11,6 +11,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import ShimmerText from "../components/ShimmerText";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const ServiceCard = ({ icon: Icon, title, description, features, delay }) => (
   <motion.div
@@ -36,84 +37,177 @@ const ServiceCard = ({ icon: Icon, title, description, features, delay }) => (
   </motion.div>
 );
 
+const PricingCard = ({ plan, index, isPopular }) => {
+  const { t } = useLanguage();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`relative p-8 rounded-2xl border transition-all flex flex-col ${
+        isPopular
+          ? "bg-surface border-accent/50 shadow-lg shadow-accent/10"
+          : "bg-surface border-white/5 hover:border-accent/30"
+      }`}
+    >
+      {isPopular && plan.badge && (
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+          <span className="px-4 py-1.5 bg-accent text-primary text-xs font-bold rounded-full shadow-lg shadow-accent/30">
+            {plan.badge}
+          </span>
+        </div>
+      )}
+
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-white mb-4">{plan.name}</h3>
+        <div className="flex items-end gap-1">
+          <span className="text-4xl font-extrabold text-white">{plan.price}</span>
+          {plan.period && (
+            <span className="text-gray-400 mb-1 text-sm">{plan.period}</span>
+          )}
+        </div>
+        <p className="text-gray-400 text-sm mt-3 leading-relaxed">{plan.description}</p>
+      </div>
+
+      <ul className="space-y-3 flex-1 mb-8">
+        {plan.features.map((feat, i) => (
+          <li key={i} className="flex items-start gap-2 text-gray-300 text-sm">
+            <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+            <span>{feat}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Link
+        to="/audit"
+        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+          isPopular
+            ? "bg-accent text-primary hover:bg-white shadow-lg shadow-accent/20"
+            : "border border-white/20 text-white hover:bg-white/10"
+        }`}
+      >
+        {index === 0
+          ? t("services.pricing.ctaStarter")
+          : index === 1
+          ? t("services.pricing.ctaPro")
+          : t("services.pricing.ctaEnterprise")}
+        <ArrowRight className="w-4 h-4" />
+      </Link>
+    </motion.div>
+  );
+};
+
+const Pricing = () => {
+  const { t } = useLanguage();
+  const plans = t("services.pricing.plans");
+
+  if (!Array.isArray(plans)) return null;
+
+  return (
+    <div className="py-20 bg-primary/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-base text-accent font-semibold tracking-wide uppercase">
+            Pricing
+          </h2>
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+            {t("services.pricing.heading")}{" "}
+            <ShimmerText>{t("services.pricing.headingHighlight")}</ShimmerText>
+          </p>
+          <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-400">
+            {t("services.pricing.subheading")}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+          {plans.map((plan, i) => (
+            <PricingCard key={i} plan={plan} index={i} isPopular={i === 1} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Services = () => {
   const services = [
     {
       icon: ShieldCheck,
-      title: "Security Hardening",
+      title: "Zabezpečenie systému",
       description:
-        "Protect your application from vulnerabilities and threats with comprehensive security audits and implementations.",
+        "Chráňte svoju aplikáciu pred zraniteľnosťami a hrozbami pomocou komplexných bezpečnostných auditov.",
       features: [
-        "Dependency vulnerability scanning & patching",
-        "SQL injection & XSS prevention",
-        "Authentication & authorization upgrades",
-        "Security headers & CSP implementation",
-        "Penetration testing & threat modeling",
+        "Skenovanie a oprava zraniteľností závislostí",
+        "Prevencia SQL injection a XSS",
+        "Vylepšenie autentifikácie a autorizácie",
+        "Implementácia bezpečnostných hlavičiek a CSP",
+        "Penetračné testovanie a modelovanie hrozieb",
       ],
     },
     {
       icon: Cpu,
-      title: "Performance Optimization",
+      title: "Optimalizácia výkonu",
       description:
-        "Make your application blazing fast with advanced optimization techniques and best practices.",
+        "Urobte svoju aplikáciu bleskovo rýchlou pomocou pokročilých optimalizačných techník.",
       features: [
-        "Database query optimization & indexing",
-        "Code profiling & bottleneck identification",
-        "Caching strategies (Redis, CDN)",
-        "Lazy loading & code splitting",
-        "Server-side rendering optimization",
+        "Optimalizácia databázových dotazov a indexovanie",
+        "Profilovanie kódu a identifikácia úzkych hrdiel",
+        "Stratégie cachovania (Redis, CDN)",
+        "Lazy loading a rozdeľovanie kódu",
+        "Optimalizácia renderovania na strane servera",
       ],
     },
     {
       icon: Code2,
-      title: "Code Modernization",
+      title: "Modernizácia kódu",
       description:
-        "Transform legacy code into clean, maintainable, and type-safe modern architecture.",
+        "Transformujte zastaraný kód do čistej, udržiavateľnej a typovo bezpečnej modernej architektúry.",
       features: [
-        "Refactoring spaghetti code to clean patterns",
-        "TypeScript migration",
-        "Modern framework upgrades (React, Vue, Angular)",
-        "API redesign & documentation",
-        "Component library creation",
+        "Refaktoring spaghetti kódu do čistých vzorov",
+        "Migrácia na TypeScript",
+        "Aktualizácia moderných frameworkov (React, Vue, Angular)",
+        "Redizajn a dokumentácia API",
+        "Tvorba knižnice komponentov",
       ],
     },
     {
       icon: TestTube,
-      title: "Testing & QA",
+      title: "Testovanie a QA",
       description:
-        "Ensure reliability with comprehensive testing strategies and quality assurance processes.",
+        "Zaistite spoľahlivosť pomocou komplexných testovacích stratégií a procesov zabezpečenia kvality.",
       features: [
-        "Unit & integration test implementation",
-        "E2E testing with Playwright/Cypress",
-        "Test coverage analysis",
-        "CI/CD pipeline setup",
-        "Automated regression testing",
+        "Implementácia unit a integračných testov",
+        "E2E testovanie s Playwright/Cypress",
+        "Analýza pokrytia testami",
+        "Nastavenie CI/CD pipeline",
+        "Automatizované regresné testovanie",
       ],
     },
     {
       icon: Cloud,
-      title: "DevOps & Infrastructure",
+      title: "DevOps a infraštruktúra",
       description:
-        "Streamline deployment and operations with modern DevOps practices and cloud infrastructure.",
+        "Zefektívnite nasadzovanie a prevádzku pomocou moderných DevOps postupov a cloudovej infraštruktúry.",
       features: [
-        "Docker containerization",
-        "Kubernetes orchestration",
-        "CI/CD automation (GitHub Actions, GitLab)",
-        "Cloud migration (AWS, GCP, Azure)",
-        "Monitoring & logging setup",
+        "Docker kontajnerizácia",
+        "Kubernetes orchestrácia",
+        "CI/CD automatizácia (GitHub Actions, GitLab)",
+        "Migrácia do cloudu (AWS, GCP, Azure)",
+        "Nastavenie monitorovania a logovania",
       ],
     },
     {
       icon: TrendingDown,
-      title: "Technical Debt Reduction",
+      title: "Redukcia technického dlhu",
       description:
-        "Systematically eliminate technical debt and improve codebase maintainability.",
+        "Systematicky eliminujte technický dlh a zlepšite udržiavateľnosť kódovej základne.",
       features: [
-        "Code smell identification & removal",
-        "Dependency cleanup & updates",
-        "Documentation generation",
-        "Architecture refactoring",
-        "Legacy system migration planning",
+        "Identifikácia a odstraňovanie code smells",
+        "Čistenie a aktualizácia závislostí",
+        "Generovanie dokumentácie",
+        "Refaktoring architektúry",
+        "Plánovanie migrácie zastaraných systémov",
       ],
     },
   ];
@@ -134,11 +228,11 @@ const Services = () => {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Our <ShimmerText className="purple">Services</ShimmerText>
+              Naše <ShimmerText className="purple">služby</ShimmerText>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Comprehensive code repair and modernization services to transform
-              your legacy systems into high-performance applications.
+              Komplexné služby opravy a modernizácie kódu na transformáciu
+              zastaraných systémov na výkonné aplikácie.
             </p>
           </motion.div>
         </div>
@@ -155,21 +249,24 @@ const Services = () => {
         </div>
       </div>
 
+      {/* Pricing Section */}
+      <Pricing />
+
       {/* CTA Section */}
       <div className="py-20 bg-surface/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to modernize your codebase?
+            Ste pripravení modernizovať váš kód?
           </h2>
           <p className="text-xl text-gray-400 mb-8">
-            Get a free diagnostic audit and see how we can help transform your
-            application.
+            Získajte bezplatný diagnostický audit a zistite, ako môžeme pomôcť
+            transformovať vašu aplikáciu.
           </p>
           <Link
             to="/audit"
             className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105"
           >
-            Get Free Audit
+            Získať bezplatný audit
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>

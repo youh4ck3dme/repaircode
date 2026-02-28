@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "services": "Služby",
+    "process": "Postup",
+    "aiSandbox": "AI Sandbox",
+    "about": "O nás",
+    "contact": "Kontakt",
+    "getAudit": "Získať audit",
+    "install": "INŠTALOVAŤ"
+  },
+  "home": {
+    "hero": {
+      "badge": "Dostupní pre núdzové opravy",
+      "title": "Oprava kódu",
+      "titleHighlight": "Zastaraných systémov",
+      "subtitle": "Modernizujeme, optimalizujeme a zabezpečujeme váš zastaraný kód. Prestaňte bojovať s technickým dlhom a začnite opäť dodávať funkcie.",
+      "ctaSandbox": "Vyskúšajte AI Sandbox",
+      "ctaProcess": "Zobraziť postup"
+    },
+    "stats": {
+      "linesFixed": "Opravených riadkov",
+      "appsModernized": "Modernizovaných aplikácií",
+      "bugsEliminated": "Zlikvidovaných chýb",
+      "uptimeIncrease": "Nárast dostupnosti"
+    },
+    "features": {
+      "heading": "Služby",
+      "subheading": "Modernizujte váš technologický stack",
+      "security": {
+        "title": "Zabezpečenie systému",
+        "desc": "Opravujeme zraniteľnosti, aktualizujeme závislosti a implementujeme moderné bezpečnostné postupy."
+      },
+      "performance": {
+        "title": "Optimalizácia výkonu",
+        "desc": "Refaktoring kódu, indexovanie databázy a stratégie cachovania pre maximálny výkon."
+      },
+      "cleanCode": {
+        "title": "Čistý kód",
+        "desc": "Prepíšeme spaghetti kód do čistých, udržiavateľných a typovaných modulov."
+      }
+    },
+    "faq": {
+      "heading": "FAQ",
+      "subheading": "Často kladené otázky",
+      "items": [
+        {
+          "q": "Ako dlho trvá typický projekt opravy kódu?",
+          "a": "Väčšina projektov sa dokončí za 1–4 týždne v závislosti od veľkosti kódovej základne. Začíname bezplatným diagnostickým auditom, aby sme vám dali presný harmonogram pred akýmkoľvek záväzkom."
+        },
+        {
+          "q": "Pracujete s akýmkoľvek programovacím jazykom alebo frameworkom?",
+          "a": "Áno. Náš pipeline s AI podporou zvláda JavaScript, TypeScript, Python, PHP, Javu a ďalšie. Sme framework-agnostickí — React, Vue, Angular, Laravel, Spring — všetko je podporované."
+        },
+        {
+          "q": "Je môj zdrojový kód dôverný?",
+          "a": "Absolútne. Podpisujeme NDA pred prístupom k vášmu kódu, spracovávame všetko v izolovaných prostrediach a nikdy neukladáme váš zdrojový kód po dokončení projektu."
+        },
+        {
+          "q": "Čo je AI Sandbox a je bezpečné ho použiť?",
+          "a": "AI Sandbox je živé demo prostredie, kde môžete nahrať .zip vašej kódovej základne a vidieť naše viacagentové analýzy v akcii. Žiadny kód sa neukladá — všetko beží v pamäti."
+        },
+        {
+          "q": "Ponúkate priebežnú údržbu po oprave?",
+          "a": "Áno. Ponúkame mesačné retenčné balíky, ktoré zahŕňajú nepretržité monitorovanie, aktualizácie závislostí a prioritné opravy chýb."
+        }
+      ]
+    }
+  },
+  "services": {
+    "heading": "Naše",
+    "headingHighlight": "služby",
+    "subheading": "Komplexné služby opravy a modernizácie kódu na transformáciu zastaraných systémov na výkonné aplikácie.",
+    "pricing": {
+      "heading": "Transparentné",
+      "headingHighlight": "Ceny",
+      "subheading": "Žiadne skryté poplatky. Vyberte si plán, ktorý zodpovedá veľkosti vašej kódovej základne.",
+      "plans": [
+        {
+          "name": "Štarter",
+          "price": "€499",
+          "period": "/projekt",
+          "description": "Ideálne pre malé skripty a opravy jednotlivých modulov.",
+          "features": [
+            "Až 5 000 riadkov kódu",
+            "Skenovanie bezpečnostných zraniteľností",
+            "1 kolo revízií",
+            "Správa + dokumentácia opráv",
+            "Dodanie za 3 dni"
+          ]
+        },
+        {
+          "name": "Profesionál",
+          "price": "€1 499",
+          "period": "/projekt",
+          "description": "Kompletný audit a modernizácia kódovej základne pre rastúce tímy.",
+          "badge": "Najpopulárnejší",
+          "features": [
+            "Až 50 000 riadkov kódu",
+            "Kompletná AI viacagentová analýza",
+            "Podpora migrácie na TypeScript",
+            "Nastavenie CI/CD pipeline",
+            "3 kolá revízií",
+            "Dodanie za 14 dní"
+          ]
+        },
+        {
+          "name": "Enterprise",
+          "price": "Na mieru",
+          "period": "",
+          "description": "Riešenia na mieru pre rozsiahle staré systémy.",
+          "features": [
+            "Neobmedzená veľkosť kódovej základne",
+            "Dedikovaný senior inžinier",
+            "Prepracovanie architektúry",
+            "Záruky SLA",
+            "Možnosť mesačného retainera",
+            "Prioritná podpora"
+          ]
+        }
+      ],
+      "ctaStarter": "Začať bezplatný audit",
+      "ctaPro": "Začať",
+      "ctaEnterprise": "Kontaktovať predaj"
+    },
+    "cta": {
+      "heading": "Ste pripravení modernizovať váš kód?",
+      "sub": "Získajte bezplatný diagnostický audit a zistite, ako môžeme pomôcť transformovať vašu aplikáciu.",
+      "button": "Získať bezplatný audit"
+    }
+  },
+  "analysis": {
+    "title": "AI analýza",
+    "analyzing": "Analyzujem kódovú základňu…",
+    "analyzingSub": "Môže to chvíľu trvať",
+    "empty": "Zatiaľ žiadna analýza",
+    "emptySub": "Nahrajte súbor pre začatie",
+    "applyFix": "Použiť opravu"
+  },
+  "toast": {
+    "extractionComplete": "Extrahovanie dokončené",
+    "analysisComplete": "Analýza dokončená",
+    "error": "Nastala chyba"
+  }
+}

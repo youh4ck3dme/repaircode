@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Search, Cpu, Sparkles } from "lucide-react";
+import { Terminal, Search, Shield, Zap, PenTool, FileText } from "lucide-react";
 
 const AgentChatLog = ({ logs }) => {
   const scrollRef = useRef(null);
@@ -13,12 +13,16 @@ const AgentChatLog = ({ logs }) => {
 
   const getAgentIcon = (agent) => {
     switch (agent) {
-      case "Analyzer":
-        return <Search className="w-3 h-3 text-green-500" />;
-      case "Factory":
-        return <Cpu className="w-3 h-3 text-blue-500" />;
-      case "Polisher":
-        return <Sparkles className="w-3 h-3 text-amber-500" />;
+      case "Diagnostics":
+        return <Search className="w-3 h-3 text-blue-500" />;
+      case "Security":
+        return <Shield className="w-3 h-3 text-red-500" />;
+      case "Performance":
+        return <Zap className="w-3 h-3 text-amber-500" />;
+      case "Architecture":
+        return <PenTool className="w-3 h-3 text-purple-500" />;
+      case "Repair":
+        return <FileText className="w-3 h-3 text-green-500" />;
       default:
         return <Terminal className="w-3 h-3 text-gray-500" />;
     }
@@ -26,12 +30,16 @@ const AgentChatLog = ({ logs }) => {
 
   const getBadgeStyle = (agent) => {
     switch (agent) {
-      case "Analyzer":
-        return "border-green-500/30 bg-green-500/10 text-green-400";
-      case "Factory":
+      case "Diagnostics":
         return "border-blue-500/30 bg-blue-500/10 text-blue-400";
-      case "Polisher":
+      case "Security":
+        return "border-red-500/30 bg-red-500/10 text-red-400";
+      case "Performance":
         return "border-amber-500/30 bg-amber-500/10 text-amber-400";
+      case "Architecture":
+        return "border-purple-500/30 bg-purple-500/10 text-purple-400";
+      case "Repair":
+        return "border-green-500/30 bg-green-500/10 text-green-400";
       default:
         return "border-gray-500/30 bg-gray-500/10 text-gray-400";
     }
@@ -42,7 +50,7 @@ const AgentChatLog = ({ logs }) => {
       <div className="p-3 border-b border-white/10 flex items-center gap-2 bg-white/5">
         <Terminal className="w-4 h-4 text-gray-400" />
         <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">
-          Agent Communication Log
+          Záznam komunikácie agentov
         </span>
       </div>
 
@@ -71,7 +79,7 @@ const AgentChatLog = ({ logs }) => {
           ))}
           {logs.length === 0 && (
             <div className="text-gray-600 italic text-center py-10">
-              Waiting for analysis start...
+              Čakám na začiatok analýzy...
             </div>
           )}
         </AnimatePresence>

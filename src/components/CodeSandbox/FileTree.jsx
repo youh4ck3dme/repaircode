@@ -47,23 +47,29 @@ const FileIcon = ({ item, isOpen, isSelected }) => {
   return React.createElement(FileTypeIcon, { className });
 };
 
-const FileTreeItem = ({ item, onSelect, selectedFile, depth = 0 }) => {
-  const [isOpen, setIsOpen] = React.useState(depth === 0);
+const FileTreeItem = ({
+  item,
+  onSelect,
+  selectedFile,
+  expandedFolders,
+  onToggleFolder,
+  depth = 0,
+}) => {
   const isFolder = item.type === "folder";
-  const isSelected = selectedFile?.path === item.path;
+  const isSelected = selectedFile === item.id;
+  const isOpen = expandedFolders[item.id];
 
   return (
     <div>
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
-        className={`flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
-          isSelected ? "bg-accent/10 text-accent" : "text-gray-300"
-        }`}
+        className={`flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${isSelected ? "bg-accent/10 text-accent font-semibold" : "text-gray-300"
+          }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
         onClick={() => {
           if (isFolder) {
-            setIsOpen(!isOpen);
+            onToggleFolder(item.id);
           } else {
             onSelect(item);
           }
@@ -83,13 +89,15 @@ const FileTreeItem = ({ item, onSelect, selectedFile, depth = 0 }) => {
       </motion.div>
 
       {isFolder && isOpen && item.children && (
-        <div>
+        <div className="overflow-hidden">
           {item.children.map((child, i) => (
             <FileTreeItem
-              key={i}
+              key={child.id || i}
               item={child}
               onSelect={onSelect}
               selectedFile={selectedFile}
+              expandedFolders={expandedFolders}
+              onToggleFolder={onToggleFolder}
               depth={depth + 1}
             />
           ))}
@@ -99,23 +107,27 @@ const FileTreeItem = ({ item, onSelect, selectedFile, depth = 0 }) => {
   );
 };
 
-const FileTree = ({ files, onSelectFile, selectedFile }) => {
+const FileTree = ({
+  data,
+  onSelect,
+  selectedFile,
+  expandedFolders = {},
+  onToggleFolder,
+}) => {
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="p-4 border-b border-white/10">
-        <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
-          Files
-        </h3>
-      </div>
+    <div className="h-full overflow-y-auto custom-scrollbar">
       <div className="p-2">
-        {files.map((file, i) => (
-          <FileTreeItem
-            key={i}
-            item={file}
-            onSelect={onSelectFile}
-            selectedFile={selectedFile}
-          />
-        ))}
+        {data &&
+          data.map((item, i) => (
+            <FileTreeItem
+              key={item.id || i}
+              item={item}
+              onSelect={onSelect}
+              selectedFile={selectedFile}
+              expandedFolders={expandedFolders}
+              onToggleFolder={onToggleFolder}
+            />
+          ))}
       </div>
     </div>
   );

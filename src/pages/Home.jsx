@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Zap, Terminal, ShieldCheck, Cpu, Code2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Zap, Terminal, ShieldCheck, Cpu, Code2, ChevronDown } from "lucide-react";
 import ShimmerText from "../components/ShimmerText";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Hero = () => {
   return (
@@ -22,7 +24,7 @@ const Hero = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
               <span className="text-sm text-gray-300">
-                Available for Emergency Fixes
+                Dostupní pre núdzové opravy
               </span>
             </div>
           </motion.div>
@@ -31,10 +33,10 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight"
+            className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight py-[5px]"
           >
-            Code Repair <br />
-            <ShimmerText>Legacy Systems</ShimmerText>
+            Oprava kódu <br />
+            <ShimmerText>Zastaraných systémov</ShimmerText>
           </motion.h1>
 
           <motion.p
@@ -43,8 +45,8 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-4 max-w-2xl mx-auto text-xl text-gray-400 mb-10"
           >
-            We modernize, optimize, and secure your legacy codebase. Stop
-            fighting technical debt and start shipping features again.
+            Modernizujeme, optimalizujeme a zabezpečujeme váš zastaraný kód. Prestaňte
+            bojovať s technickým dlhom a začnite opäť dodávať funkcie.
           </motion.p>
 
           <motion.div
@@ -58,14 +60,14 @@ const Hero = () => {
               className="px-8 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Zap className="w-5 h-5" />
-              Try AI Sandbox
+              Vyskúšajte AI Sandbox
             </Link>
             <Link
               to="/process"
               className="px-8 py-4 bg-transparent border border-white/20 text-white rounded-lg font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <Terminal className="w-5 h-5" />
-              View Process
+              Zobraziť postup
             </Link>
           </motion.div>
         </div>
@@ -94,21 +96,21 @@ const Features = () => {
   const features = [
     {
       icon: ShieldCheck,
-      title: "Security Hardening",
+      title: "Zabezpečenie systému",
       description:
-        "We patch vulnerabilities, upgrade dependencies, and implement modern security best practices.",
+        "Opravujeme zraniteľnosti, aktualizujeme závislosti a implementujeme moderné bezpečnostné postupy.",
     },
     {
       icon: Cpu,
-      title: "Performance Optimization",
+      title: "Optimalizácia výkonu",
       description:
-        "Code refactoring, database indexing, and caching strategies to make your app fly.",
+        "Refaktoring kódu, indexovanie databázy a stratégie cachovania pre maximálny výkon.",
     },
     {
       icon: Code2,
-      title: "Clean Codebase",
+      title: "Čistý kód",
       description:
-        "We rewrite spaghetti code into clean, maintainable, and typed modules.",
+        "Prepíšeme spaghetti kód do čistých, udržiavateľných a typovaných modulov.",
     },
   ];
 
@@ -117,10 +119,10 @@ const Features = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-base text-accent font-semibold tracking-wide uppercase">
-            Services
+            Služby
           </h2>
           <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-            Upgrade Your Technology Stack
+            Modernizujte váš technologický stack
           </p>
         </div>
 
@@ -139,10 +141,10 @@ const Stats = () => (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-surface p-6 rounded-lg">
         {[
-          { label: "Lines Repaired", value: "1.2M+" },
-          { label: "Apps Modernized", value: "50+" },
-          { label: "Bugs Crushed", value: "3.5k+" },
-          { label: "Uptime Increase", value: "99.9%" },
+          { label: "Opravených riadkov", value: "1.2M+" },
+          { label: "Modernizovaných aplikácií", value: "50+" },
+          { label: "Zlikvidovaných chýb", value: "3.5k+" },
+          { label: "Nárast dostupnosti", value: "99.9%" },
         ].map((stat, i) => (
           <div key={i}>
             <div className="text-3xl md:text-4xl font-bold text-white mb-2">
@@ -158,12 +160,92 @@ const Stats = () => (
   </div>
 );
 
+const FAQItem = ({ question, answer, isOpen, onToggle, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay }}
+    className="border border-white/10 rounded-2xl overflow-hidden bg-surface hover:border-accent/30 transition-colors"
+  >
+    <button
+      onClick={onToggle}
+      className="w-full flex items-center justify-between p-6 text-left group"
+    >
+      <span className="text-white font-semibold pr-4 group-hover:text-accent transition-colors">
+        {question}
+      </span>
+      <motion.div
+        animate={{ rotate: isOpen ? 180 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex-shrink-0 w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center"
+      >
+        <ChevronDown className="w-4 h-4 text-accent" />
+      </motion.div>
+    </button>
+
+    <AnimatePresence initial={false}>
+      {isOpen && (
+        <motion.div
+          key="content"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
+          className="overflow-hidden"
+        >
+          <div className="px-6 pb-6 text-gray-400 leading-relaxed border-t border-white/5 pt-4">
+            {answer}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </motion.div>
+);
+
+const FAQ = () => {
+  const { t } = useLanguage();
+  const [openIndex, setOpenIndex] = useState(null);
+  const items = t("home.faq.items");
+
+  if (!Array.isArray(items)) return null;
+
+  return (
+    <div className="py-24 bg-primary">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-base text-accent font-semibold tracking-wide uppercase">
+            {t("home.faq.heading")}
+          </h2>
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+            {t("home.faq.subheading")}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {items.map((item, i) => (
+            <FAQItem
+              key={i}
+              question={item.q}
+              answer={item.a}
+              isOpen={openIndex === i}
+              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
+              delay={i * 0.05}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Home = () => {
   return (
     <>
       <Hero />
       <Stats />
       <Features />
+      <FAQ />
     </>
   );
 };

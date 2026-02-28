@@ -44,11 +44,11 @@ const Contact = () => {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Get in <ShimmerText className="orange">Touch</ShimmerText>
+              <ShimmerText className="orange">Kontaktujte nás</ShimmerText>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Have a legacy codebase that needs attention? Let&apos;s talk about
-              how we can help.
+              Máte zastaraný kód, ktorý potrebuje pozornosť? Porozprávajme sa o
+              tom, ako vám môžeme pomôcť.
             </p>
           </motion.div>
         </div>
@@ -66,10 +66,10 @@ const Contact = () => {
               transition={{ duration: 0.5 }}
             >
               <h2 className="text-3xl font-bold text-white mb-6">
-                Let&apos;s build something amazing together.
+                Poďme spolu vytvoriť niečo úžasné.
               </h2>
               <p className="text-gray-400 mb-8">
-                Ready to modernize your codebase? We&apos;re here to help.
+                Ste pripravení modernizovať váš kód? Sme tu, aby sme pomohli.
               </p>
 
               <div className="space-y-6">
@@ -78,7 +78,7 @@ const Contact = () => {
                     <Mail className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Email</h3>
+                    <h3 className="text-white font-semibold mb-1">E-mail</h3>
                     <a
                       href="mailto:hello@repaircode.com"
                       className="text-gray-400 hover:text-accent transition-colors"
@@ -93,7 +93,7 @@ const Contact = () => {
                     <Phone className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Phone</h3>
+                    <h3 className="text-white font-semibold mb-1">Telefón</h3>
                     <a
                       href="tel:+1234567890"
                       className="text-gray-400 hover:text-accent transition-colors"
@@ -108,7 +108,7 @@ const Contact = () => {
                     <MapPin className="w-6 h-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Office</h3>
+                    <h3 className="text-white font-semibold mb-1">Kancelária</h3>
                     <p className="text-gray-400">
                       123 Tech Street
                       <br />
@@ -133,10 +133,10 @@ const Contact = () => {
                     <CheckCircle2 className="w-8 h-8 text-accent" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">
-                    Message Sent!
+                    Správa odoslaná!
                   </h3>
                   <p className="text-gray-400">
-                    We&apos;ll get back to you within 24 hours.
+                    Ozveme sa vám do 24 hodín.
                   </p>
                 </div>
               ) : (
@@ -146,7 +146,7 @@ const Contact = () => {
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-300 mb-2"
                     >
-                      Name *
+                      Meno *
                     </label>
                     <input
                       type="text"
@@ -156,7 +156,7 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-background border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent transition-colors"
-                      placeholder="John Doe"
+                      placeholder="Ján Novák"
                     />
                   </div>
 
@@ -165,7 +165,7 @@ const Contact = () => {
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-300 mb-2"
                     >
-                      Email *
+                      E-mail *
                     </label>
                     <input
                       type="email"
@@ -184,7 +184,7 @@ const Contact = () => {
                       htmlFor="company"
                       className="block text-sm font-medium text-gray-300 mb-2"
                     >
-                      Company
+                      Spoločnosť
                     </label>
                     <input
                       type="text"
@@ -193,7 +193,7 @@ const Contact = () => {
                       value={formData.company}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-background border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent transition-colors"
-                      placeholder="Acme Inc."
+                      placeholder="Acme s.r.o."
                     />
                   </div>
 
@@ -202,7 +202,7 @@ const Contact = () => {
                       htmlFor="message"
                       className="block text-sm font-medium text-gray-300 mb-2"
                     >
-                      Message *
+                      Správa *
                     </label>
                     <textarea
                       id="message"
@@ -212,7 +212,7 @@ const Contact = () => {
                       onChange={handleChange}
                       rows={5}
                       className="w-full px-4 py-3 bg-background border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-accent transition-colors resize-none"
-                      placeholder="Tell us about your project..."
+                      placeholder="Opíšte váš projekt..."
                     />
                   </div>
 
@@ -221,7 +221,7 @@ const Contact = () => {
                     className="w-full px-6 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
                   >
                     <Send className="w-5 h-5" />
-                    Send Message
+                    Odoslať správu
                   </button>
                 </form>
               )}

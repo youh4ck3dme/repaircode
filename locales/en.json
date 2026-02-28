@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "services": "Services",
+    "process": "Process",
+    "aiSandbox": "AI Sandbox",
+    "about": "About",
+    "contact": "Contact",
+    "getAudit": "Get Audit",
+    "install": "INSTALL"
+  },
+  "home": {
+    "hero": {
+      "badge": "Available for emergency repairs",
+      "title": "Code Repair of",
+      "titleHighlight": "Legacy Systems",
+      "subtitle": "We modernize, optimize, and secure your outdated code. Stop fighting technical debt and start delivering features again.",
+      "ctaSandbox": "Try AI Sandbox",
+      "ctaProcess": "View Process"
+    },
+    "stats": {
+      "linesFixed": "Lines Fixed",
+      "appsModernized": "Apps Modernized",
+      "bugsEliminated": "Bugs Eliminated",
+      "uptimeIncrease": "Uptime Increase"
+    },
+    "features": {
+      "heading": "Services",
+      "subheading": "Modernize Your Tech Stack",
+      "security": {
+        "title": "System Security",
+        "desc": "We fix vulnerabilities, update dependencies and implement modern security practices."
+      },
+      "performance": {
+        "title": "Performance Optimization",
+        "desc": "Code refactoring, database indexing, and caching strategies for maximum performance."
+      },
+      "cleanCode": {
+        "title": "Clean Code",
+        "desc": "We rewrite spaghetti code into clean, maintainable, and typed modules."
+      }
+    },
+    "faq": {
+      "heading": "FAQ",
+      "subheading": "Frequently Asked Questions",
+      "items": [
+        {
+          "q": "How long does a typical code repair project take?",
+          "a": "Most projects complete in 1–4 weeks depending on codebase size. We start with a free diagnostic audit to give you an accurate timeline before any commitment."
+        },
+        {
+          "q": "Do you work with any programming language or framework?",
+          "a": "Yes. Our AI-assisted pipeline handles JavaScript, TypeScript, Python, PHP, Java, and more. We are framework-agnostic — React, Vue, Angular, Laravel, Spring — all supported."
+        },
+        {
+          "q": "Is my source code kept confidential?",
+          "a": "Absolutely. We sign NDAs before accessing your code, process everything in isolated environments, and never store your source code after project completion."
+        },
+        {
+          "q": "What is the AI Sandbox and is it safe to use?",
+          "a": "The AI Sandbox is a live demo environment where you can upload a .zip of your codebase and see our multi-agent analysis in action. No code is stored — everything runs in memory."
+        },
+        {
+          "q": "Do you offer ongoing maintenance after the repair?",
+          "a": "Yes. We offer monthly retainer packages that cover continuous monitoring, dependency updates, and priority bug fixes."
+        }
+      ]
+    }
+  },
+  "services": {
+    "heading": "Our",
+    "headingHighlight": "Services",
+    "subheading": "Comprehensive code repair and modernization services to transform legacy systems into high-performance applications.",
+    "pricing": {
+      "heading": "Transparent",
+      "headingHighlight": "Pricing",
+      "subheading": "No hidden fees. Choose the plan that fits your codebase size.",
+      "plans": [
+        {
+          "name": "Starter",
+          "price": "€499",
+          "period": "/project",
+          "description": "Perfect for small scripts and single-module fixes.",
+          "features": [
+            "Up to 5,000 lines of code",
+            "Security vulnerability scan",
+            "1 round of revisions",
+            "Report + fix documentation",
+            "3-day turnaround"
+          ]
+        },
+        {
+          "name": "Professional",
+          "price": "€1,499",
+          "period": "/project",
+          "description": "Full codebase audit and modernization for growing teams.",
+          "badge": "Most Popular",
+          "features": [
+            "Up to 50,000 lines of code",
+            "Full AI multi-agent analysis",
+            "TypeScript migration support",
+            "CI/CD pipeline setup",
+            "3 rounds of revisions",
+            "14-day turnaround"
+          ]
+        },
+        {
+          "name": "Enterprise",
+          "price": "Custom",
+          "period": "",
+          "description": "Tailored solutions for large-scale legacy systems.",
+          "features": [
+            "Unlimited codebase size",
+            "Dedicated senior engineer",
+            "Architecture redesign",
+            "SLA guarantees",
+            "Monthly retainer option",
+            "Priority support"
+          ]
+        }
+      ],
+      "ctaStarter": "Start Free Audit",
+      "ctaPro": "Get Started",
+      "ctaEnterprise": "Contact Sales"
+    },
+    "cta": {
+      "heading": "Ready to modernize your code?",
+      "sub": "Get a free diagnostic audit and discover how we can transform your application.",
+      "button": "Get Free Audit"
+    }
+  },
+  "analysis": {
+    "title": "AI Analysis",
+    "analyzing": "Analyzing codebase…",
+    "analyzingSub": "This may take a moment",
+    "empty": "No analysis yet",
+    "emptySub": "Upload a file to begin",
+    "applyFix": "Apply Fix"
+  },
+  "toast": {
+    "extractionComplete": "Extraction complete",
+    "analysisComplete": "Analysis complete",
+    "error": "An error occurred"
+  }
+}

@@ -7,3 +7,5 @@ backup_original
 .vscode
 coverage
 *.log
+.vercel
+.env*.local

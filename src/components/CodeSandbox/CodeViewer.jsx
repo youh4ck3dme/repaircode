@@ -1,22 +1,44 @@
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
+import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
+import tsx from "react-syntax-highlighter/dist/esm/languages/prism/tsx";
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+import java from "react-syntax-highlighter/dist/esm/languages/prism/java";
+import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
+import markup from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
+import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
 
-const CodeViewer = ({ file, content }) => {
-  if (!file) {
+SyntaxHighlighter.registerLanguage("javascript", javascript);
+SyntaxHighlighter.registerLanguage("jsx", jsx);
+SyntaxHighlighter.registerLanguage("typescript", typescript);
+SyntaxHighlighter.registerLanguage("tsx", tsx);
+SyntaxHighlighter.registerLanguage("python", python);
+SyntaxHighlighter.registerLanguage("java", java);
+SyntaxHighlighter.registerLanguage("json", json);
+SyntaxHighlighter.registerLanguage("html", markup);
+SyntaxHighlighter.registerLanguage("css", css);
+SyntaxHighlighter.registerLanguage("markdown", markdown);
+SyntaxHighlighter.registerLanguage("bash", bash);
+
+const CodeViewer = ({ code, language, showLineNumbers = true }) => {
+  if (!code && code !== "") {
     return (
       <div className="h-full flex items-center justify-center text-gray-500">
-        <div className="text-center">
-          <p className="text-lg mb-2">No file selected</p>
-          <p className="text-sm">
-            Select a file from the tree to view its contents
+        <div className="text-center p-8 bg-black/20 rounded-2xl border border-white/5 backdrop-blur-sm">
+          <p className="text-lg mb-2 text-white font-semibold">Pripravený na analýzu</p>
+          <p className="text-sm text-gray-400">
+            Vyberte súbor z prieskumníka na zobrazenie obsahu
           </p>
         </div>
       </div>
     );
   }
 
-  const getLanguage = (filename) => {
-    const ext = filename.split(".").pop();
+  const getPrismLanguage = (lang) => {
     const langMap = {
       js: "javascript",
       jsx: "jsx",
@@ -29,30 +51,35 @@ const CodeViewer = ({ file, content }) => {
       css: "css",
       md: "markdown",
     };
-    return langMap[ext] || "text";
+    return langMap[lang] || lang || "text";
   };
 
   return (
-    <div className="h-full overflow-auto">
-      <div className="sticky top-0 z-10 px-4 py-3 bg-surface border-b border-white/10 flex items-center justify-between">
-        <span className="text-sm text-gray-400">{file.path}</span>
-        <span className="text-xs text-gray-500 uppercase">
-          {getLanguage(file.name)}
-        </span>
+    <div className="h-full overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-auto custom-scrollbar">
+        <SyntaxHighlighter
+          language={getPrismLanguage(language)}
+          style={vscDarkPlus}
+          showLineNumbers={showLineNumbers}
+          customStyle={{
+            margin: 0,
+            padding: "1.5rem",
+            background: "transparent",
+            fontSize: "13px",
+            lineHeight: "1.6",
+            fontFamily: "'Fira Code', 'Monaco', monospace",
+          }}
+          lineNumberStyle={{
+            minWidth: "3em",
+            paddingRight: "1em",
+            color: "#4a4a4a",
+            textAlign: "right",
+            userSelect: "none",
+          }}
+        >
+          {code || "// Empty file"}
+        </SyntaxHighlighter>
       </div>
-      <SyntaxHighlighter
-        language={getLanguage(file.name)}
-        style={vscDarkPlus}
-        showLineNumbers
-        customStyle={{
-          margin: 0,
-          padding: "1rem",
-          background: "transparent",
-          fontSize: "14px",
-        }}
-      >
-        {content || "// Empty file"}
-      </SyntaxHighlighter>
     </div>
   );
 };

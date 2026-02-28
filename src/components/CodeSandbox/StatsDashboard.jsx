@@ -17,7 +17,7 @@ const StatsDashboard = ({ stats, show }) => {
           {stats.filesProcessed}
         </span>
         <span className="text-xs text-gray-400 uppercase tracking-widest">
-          Files Scanned
+          Naskenovaných súborov
         </span>
       </motion.div>
 
@@ -33,7 +33,7 @@ const StatsDashboard = ({ stats, show }) => {
           {stats.issuesFound}
         </span>
         <span className="text-xs text-gray-400 uppercase tracking-widest">
-          Issues Found
+          Nájdených problémov
         </span>
       </motion.div>
 
@@ -49,7 +49,7 @@ const StatsDashboard = ({ stats, show }) => {
           {stats.issuesFixed}
         </span>
         <span className="text-xs text-gray-400 uppercase tracking-widest">
-          Fixed
+          Opravených
         </span>
       </motion.div>
     </div>

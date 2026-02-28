@@ -1,12 +1,7 @@
 FROM node:20-alpine
-
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm install
-
-COPY . .
-
+RUN npm ci --only=production
+COPY server ./server
 EXPOSE 4000
-
-CMD ["npm", "start"]
+CMD ["node", "server/index.js"]

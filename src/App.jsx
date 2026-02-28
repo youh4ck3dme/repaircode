@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
+import { LanguageProvider } from "./contexts/LanguageContext";
 
 const Home = React.lazy(() => import("./pages/Home"));
 const Services = React.lazy(() => import("./pages/Services"));
@@ -9,6 +10,8 @@ const About = React.lazy(() => import("./pages/About"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const Audit = React.lazy(() => import("./pages/Audit"));
 const LiveCodeOnline = React.lazy(() => import("./pages/LiveCodeOnline"));
+
+const OfflineFallback = React.lazy(() => import("./pages/OfflineFallback"));
 
 const router = createBrowserRouter([
   {
@@ -113,12 +116,30 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: "offline",
+        element: (
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                Loading...
+              </div>
+            }
+          >
+            <OfflineFallback />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <LanguageProvider>
+      <RouterProvider router={router} />
+    </LanguageProvider>
+  );
 }
 
 export default App;

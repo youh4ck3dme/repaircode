@@ -12,19 +12,19 @@ const Footer = () => {
               <span className="font-bold text-xl text-white">RepairCode</span>
             </div>
             <p className="text-gray-400 max-w-sm">
-              Expert software modernization services. We turn legacy liabilities
-              into high-performance assets.
+              Odborné služby modernizácie softvéru. Meniame zastarané záväzky
+              na výkonné aktíva.
             </p>
           </div>
           <div>
-            <h4 className="text-white font-bold mb-4">Company</h4>
+            <h4 className="text-white font-bold mb-4">Spoločnosť</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
                   to="/about"
                   className="hover:text-accent transition-colors"
                 >
-                  About
+                  O nás
                 </Link>
               </li>
               <li>
@@ -32,7 +32,7 @@ const Footer = () => {
                   to="/services"
                   className="hover:text-accent transition-colors"
                 >
-                  Services
+                  Služby
                 </Link>
               </li>
               <li>
@@ -40,7 +40,7 @@ const Footer = () => {
                   to="/process"
                   className="hover:text-accent transition-colors"
                 >
-                  Process
+                  Postup
                 </Link>
               </li>
               <li>
@@ -54,23 +54,23 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-bold mb-4">Legal</h4>
+            <h4 className="text-white font-bold mb-4">Právne</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a href="#" className="hover:text-accent transition-colors">
-                  Privacy
+                  Ochrana súkromia
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-accent transition-colors">
-                  Terms
+                  Podmienky
                 </a>
               </li>
             </ul>
           </div>
         </div>
         <div className="pt-8 border-t border-white/10 text-center text-gray-600 text-sm">
-          &copy; 2024 RepairCode Inc. All rights reserved.
+          &copy; 2024 RepairCode Inc. Všetky práva vyhradené.
         </div>
       </div>
     </footer>
