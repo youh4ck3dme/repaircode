@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Code2, Menu, X, Download, LayoutDashboard, Info, Mail, Zap } from "lucide-react";
+import { Code2, Menu, X, Download, LayoutDashboard, Info, Mail, Zap, Github, Rocket } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const Navbar = () => {
@@ -39,6 +39,7 @@ const Navbar = () => {
     { name: t("nav.services"), path: "/services", icon: Zap },
     { name: t("nav.process"), path: "/process", icon: LayoutDashboard },
     { name: t("nav.aiSandbox"), path: "/livecodeonline", icon: Code2 },
+    { name: t("nav.spaceCode"), path: "/spacecode", icon: Rocket },
     { name: t("nav.about"), path: "/about", icon: Info },
     { name: t("nav.contact"), path: "/contact", icon: Mail },
   ];
@@ -50,12 +51,10 @@ const Navbar = () => {
       <nav className="fixed w-full z-50 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2 group">
-              <div className="p-2 bg-accent/10 rounded-xl group-hover:bg-accent/20 transition-all duration-300">
-                <Code2 className="w-6 h-6 text-accent" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-white">
-                Repair<span className="text-accent">Code</span>
+            <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
+              <img src="/logo.png" className="w-8 h-8 group-hover:scale-110 transition-transform" alt="" />
+              <span className="font-bold text-2xl tracking-tighter text-white">
+                RubberDuck<span className="text-primary">.Space</span>
               </span>
             </Link>
 
@@ -66,7 +65,7 @@ const Navbar = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors uppercase tracking-wider relative ${isActive(item.path)
+                    className={`px-3 py-2 rounded-md text-[11px] font-bold transition-colors uppercase tracking-wider relative ${isActive(item.path)
                       ? "text-accent"
                       : "text-gray-300 hover:text-accent"
                       }`}
@@ -102,9 +101,16 @@ const Navbar = () => {
                     {t("nav.install")}
                   </button>
                 )}
+                <a
+                  href={import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/github/login` : "/api/github/login"}
+                  className="flex items-center gap-2 text-xs font-bold text-gray-300 border border-white/20 px-4 py-2 rounded-xl hover:bg-white/5 transition-all hover:text-white"
+                >
+                  <Github className="w-4 h-4" />
+                  Connect
+                </a>
                 <Link
                   to="/audit"
-                  className="bg-accent text-primary px-6 py-2.5 rounded-xl font-bold hover:bg-white transition-all shadow-lg shadow-accent/20 active:scale-95"
+                  className="bg-accent text-black px-6 py-2.5 rounded-xl font-bold hover:bg-white transition-all shadow-lg shadow-accent/20 active:scale-95"
                 >
                   {t("nav.getAudit")}
                 </Link>
@@ -151,9 +157,9 @@ const Navbar = () => {
               className="fixed right-0 top-0 bottom-0 w-80 bg-background border-l border-white/10 z-[70] md:hidden p-6 flex flex-col"
             >
               <div className="flex justify-between items-center mb-10">
-                <div className="flex items-center gap-2">
-                  <Code2 className="w-6 h-6 text-accent" />
-                  <span className="font-bold text-lg text-white">RepairCode</span>
+                <div className="flex items-center gap-3">
+                  <img src="/logo.png" className="w-6 h-6" alt="" />
+                  <span className="font-bold text-xl text-white">RubberDuck<span className="text-primary">.Space</span></span>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
@@ -171,7 +177,7 @@ const Navbar = () => {
                       key={item.path}
                       to={item.path}
                       onClick={() => setIsOpen(false)}
-                      className={`flex items-center gap-4 px-4 py-3 rounded-xl text-lg font-medium transition-all ${isActive(item.path)
+                      className={`flex items-center gap-4 px-4 py-3 rounded-xl text-[15px] font-medium transition-all ${isActive(item.path)
                         ? "bg-accent/10 text-accent border border-accent/20"
                         : "text-gray-400 hover:bg-white/5 hover:text-white"
                         }`}
@@ -195,7 +201,7 @@ const Navbar = () => {
                 <Link
                   to="/audit"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full bg-accent text-primary py-4 rounded-2xl font-bold text-lg shadow-xl shadow-accent/20"
+                  className="flex items-center justify-center gap-2 w-full bg-accent text-black py-4 rounded-2xl font-bold text-lg shadow-xl shadow-accent/20"
                 >
                   <Zap className="w-5 h-5" />
                   {t("nav.getAudit")}

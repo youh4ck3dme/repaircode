@@ -10,6 +10,8 @@ const About = React.lazy(() => import("./pages/About"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const Audit = React.lazy(() => import("./pages/Audit"));
 const LiveCodeOnline = React.lazy(() => import("./pages/LiveCodeOnline"));
+const GitHubDashboard = React.lazy(() => import("./pages/GitHubDashboard"));
+const SpaceCode = React.lazy(() => import("./pages/SpaceCode"));
 
 const OfflineFallback = React.lazy(() => import("./pages/OfflineFallback"));
 
@@ -113,6 +115,34 @@ const router = createBrowserRouter([
             }
           >
             <LiveCodeOnline />
+          </Suspense>
+        ),
+      },
+      {
+        path: "spacecode",
+        element: (
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                Loading...
+              </div>
+            }
+          >
+            <SpaceCode />
+          </Suspense>
+        ),
+      },
+      {
+        path: "github-dashboard",
+        element: (
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                Loading...
+              </div>
+            }
+          >
+            <GitHubDashboard />
           </Suspense>
         ),
       },

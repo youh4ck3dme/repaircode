@@ -9,6 +9,9 @@
                     "file": {
                         "type": "string"
                     },
+                    "newFile": {
+                        "type": "boolean"
+                    },
                     "changes": {
                         "type": "array",
                         "items": {

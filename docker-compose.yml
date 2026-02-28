@@ -2,8 +2,8 @@ version: '3.8'
 services:
   mcp-server:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
     image: livecode-mcp-server:latest
     ports:
       - "4000:4000"
@@ -11,15 +11,20 @@ services:
     environment:
       - NODE_ENV=production
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_OAUTH_REDIRECT_URI=${GITHUB_OAUTH_REDIRECT_URI}
     volumes:
-      - ./server/db:/app/server/db
-      - ./server/repo:/app/server/repo
+      - ./server/data/db:/app/data/db
+      - ./server/data/repo:/app/data/repo
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://rubberduck.space
     image: livecode-frontend:latest
     ports:
-      - "8080:80"
+      - "8082:80"
     restart: unless-stopped

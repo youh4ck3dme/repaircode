@@ -1,0 +1,29 @@
+{
+    "type": "object",
+    "properties": {
+        "actions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "refactorId": {
+                        "type": "string"
+                    },
+                    "steps": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "refactorId",
+                    "steps"
+                ]
+            }
+        }
+    },
+    "required": [
+        "actions"
+    ]
+}

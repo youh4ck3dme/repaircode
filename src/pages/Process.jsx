@@ -151,8 +151,8 @@ const Process = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Náš <ShimmerText className="blue">postup</ShimmerText>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <ShimmerText className="blue">Náš postup</ShimmerText>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Osvedčená 6-kroková metodológia na transformáciu zastaraného kódu

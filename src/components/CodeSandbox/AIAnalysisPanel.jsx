@@ -92,25 +92,38 @@ const AIAnalysisPanel = ({ issues, isAnalyzing, onApplyFix }) => {
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
                         <h4 className="text-sm font-semibold text-white mb-1">
-                          {issue.title || issue.message}
+                          {issue.type === "refactor" ? issue.suggestion : (issue.title || issue.message)}
                         </h4>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10 uppercase font-bold">
+                        <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-bold border ${issue.type === "refactor" ? "bg-accent/20 text-accent border-accent/30" : "bg-white/5 text-gray-400 border-white/10"}`}>
                           {issue.type || 'AI Audit'}
                         </span>
                       </div>
                       <p className="text-xs text-gray-400 mb-2 whitespace-pre-line">
-                        {issue.description || issue.message}
+                        {issue.description || issue.message || (issue.type === "refactor" ? `Structural improvement in ${issue.file}` : "")}
                       </p>
                       {issue.file && (
                         <div className="flex items-center gap-2 text-[10px] text-gray-500 font-mono">
                           <span className="px-1.5 py-0.5 rounded bg-black/30 border border-white/5">
-                            {issue.file}{issue.line ? `:${issue.line}` : ''}
+                            {issue.file}{issue.line || issue.lines ? `:${issue.line || issue.lines}` : ''}
                           </span>
                         </div>
                       )}
                     </div>
                   </div>
-                  {(issue.fix || issue.suggestion || issue.suggested_fix) && (
+
+                  {issue.type === "refactor" && issue.action?.steps && (
+                    <div className="mt-4 ml-8 space-y-2 border-l-2 border-accent/20 pl-4">
+                      <p className="text-[10px] font-bold text-accent uppercase tracking-widest mb-2">Refactoring Steps:</p>
+                      {issue.action.steps.map((step, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs text-gray-400">
+                          <div className="w-1.5 h-1.5 rounded-full bg-accent/40" />
+                          {step}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {(issue.fix || issue.suggestion || issue.suggested_fix) && issue.type !== "refactor" && (
                     <div className="mt-3 pt-3 border-t border-white/10">
                       <p className="text-xs text-gray-400 mb-2">
                         💡 {t("analysis.suggestedFix") || "Navrhovaná oprava"}:
@@ -135,6 +148,16 @@ const AIAnalysisPanel = ({ issues, isAnalyzing, onApplyFix }) => {
                         </button>
                       )}
                     </div>
+                  )}
+
+                  {issue.type === "refactor" && onApplyFix && (
+                    <button
+                      onClick={() => onApplyFix(issue)}
+                      className="mt-4 w-full px-3 py-2 bg-accent text-primary rounded-lg text-xs font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
+                    >
+                      <Zap className="w-3 h-3" />
+                      Apply Refactor
+                    </button>
                   )}
 
 

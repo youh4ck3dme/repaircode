@@ -7,13 +7,13 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-6">
-              <Code2 className="w-6 h-6 text-accent" />
-              <span className="font-bold text-xl text-white">RepairCode</span>
+            <div className="flex items-center gap-3 mb-6">
+              <img src="/logo.png" className="w-8 h-8" alt="" />
+              <span className="font-bold text-2xl text-white">RubberDuck<span className="text-primary">.Space</span></span>
             </div>
             <p className="text-gray-400 max-w-sm">
-              Odborné služby modernizácie softvéru. Meniame zastarané záväzky
-              na výkonné aktíva.
+              Advanced AI-driven repository modernization and surgical repair.
+              Making legacy code high-performance and future-proof.
             </p>
           </div>
           <div>
@@ -70,7 +70,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="pt-8 border-t border-white/10 text-center text-gray-600 text-sm">
-          &copy; 2024 RepairCode Inc. Všetky práva vyhradené.
+          &copy; 2024 RubberDuck.Space AI. All rights reserved.
         </div>
       </div>
     </footer>

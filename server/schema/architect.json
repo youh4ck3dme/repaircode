@@ -1,0 +1,50 @@
+{
+    "type": "object",
+    "properties": {
+        "summary": {
+            "type": "string"
+        },
+        "refactors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "file": {
+                        "type": "string"
+                    },
+                    "lines": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ]
+                    },
+                    "suggestion": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "file",
+                    "suggestion",
+                    "severity"
+                ]
+            }
+        }
+    },
+    "required": [
+        "summary",
+        "refactors"
+    ]
+}

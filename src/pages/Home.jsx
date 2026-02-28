@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Terminal, ShieldCheck, Cpu, Code2, ChevronDown } from "lucide-react";
-import ShimmerText from "../components/ShimmerText";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const Hero = () => {
@@ -33,10 +32,10 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight py-[5px]"
+            className="text-5xl md:text-7xl font-bold mb-6 tracking-tight py-[5px]"
           >
-            Oprava kódu <br />
-            <ShimmerText>Zastaraných systémov</ShimmerText>
+            <span className="heading-premium block">Oprava kódu</span>
+            <span className="heading-premium block text-4xl md:text-6xl mt-2 tracking-normal opacity-90">Zastaraných systémov</span>
           </motion.h1>
 
           <motion.p
@@ -57,7 +56,7 @@ const Hero = () => {
           >
             <Link
               to="/livecodeonline"
-              className="px-8 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-accent text-black rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Zap className="w-5 h-5" />
               Vyskúšajte AI Sandbox

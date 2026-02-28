@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Code2, Users, Target, Zap } from "lucide-react";
-import ShimmerText from "../components/ShimmerText";
 
 const About = () => {
   const values = [
@@ -45,8 +44,8 @@ const About = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              O <ShimmerText className="pink">RepairCode</ShimmerText>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="heading-premium">O Rubberduck</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Naším poslaním je eliminácia technického dlhu a pomoc vývojárskym
@@ -67,7 +66,7 @@ const About = () => {
           >
             <h2 className="text-3xl font-bold text-white mb-6">Náš príbeh</h2>
             <p className="text-gray-400 text-lg leading-relaxed mb-4">
-              RepairCode založil tím senior inžinierov, ktorí strávili roky bojom
+              Rubberduck založil tím senior inžinierov, ktorí strávili roky bojom
               so zastaranými kódovými základňami vo Fortune 500 spoločnostiach. Videli
               sme talentovaných vývojárov strácať nespočetné hodiny ladením starého kódu
               namiesto tvorby nových funkcií.

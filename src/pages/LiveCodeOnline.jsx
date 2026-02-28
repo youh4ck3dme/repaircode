@@ -1,19 +1,19 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import JSZip from "jszip";
 import { motion } from "framer-motion";
-import { Upload, Play, RefreshCw, Terminal, FileText as FileCode, Zap } from "lucide-react";
+import { Upload, Play, RefreshCw, Terminal, FileText as FileCode, Zap, ShieldCheck, Cpu } from "lucide-react";
 
 import FileTree from "../components/CodeSandbox/FileTree";
 import CodeViewer from "../components/CodeSandbox/CodeViewer";
 import AIAnalysisPanel from "../components/CodeSandbox/AIAnalysisPanel";
-import ShimmerText from "../components/ShimmerText";
 import AgentChatLog from "../components/CodeSandbox/AgentChatLog";
 import StatsDashboard from "../components/CodeSandbox/StatsDashboard";
 import ParticleBackground from "../components/ParticleBackground";
 import ProgressBar from "../components/ProgressBar";
 import { useToasts } from "../components/ToastManager";
 import { useLanguage } from "../contexts/LanguageContext";
+import { buildApiUrl, buildEventUrl } from "../config";
 
 const LiveCodeOnline = () => {
   const [files, setFiles] = useState([]);
@@ -25,6 +25,7 @@ const LiveCodeOnline = () => {
   const [isExtracting, setIsExtracting] = useState(false);
   const [extractionProgress, setExtractionProgress] = useState(0);
   const [showDashboard, setShowDashboard] = useState(false);
+  const [mode, setMode] = useState("bug_hunter"); // bug_hunter or architect
 
   // Simulation State
   const [simulationStage, setSimulationStage] = useState("idle"); // idle, analyzer, factory, polisher, completed
@@ -47,6 +48,119 @@ const LiveCodeOnline = () => {
     setAgentLogs((prev) => [...prev, { id: Date.now(), agent, message }]);
   }, []);
 
+  // Auto-connect to an existing job when redirected from GitHub Dashboard
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const jobId = params.get("jobId");
+    if (!jobId) return;
+
+    // Clear the URL param without reload
+    window.history.replaceState({}, "", "/livecodeonline");
+
+    setSimulationStage("diagnostics");
+    setIsAnalyzing(true);
+    setAgentLogs([]);
+    setIssues([]);
+    addLog("system", `Resuming GitHub audit – Job ${jobId}. Connecting to live stream...`);
+
+    const es = new EventSource(buildEventUrl(jobId));
+
+    es.addEventListener("analysis_start", (e) => {
+      const data = JSON.parse(e.data);
+      addLog("Analyzer", data.message);
+    });
+
+    es.addEventListener("analysis_chunk_start", (e) => {
+      const data = JSON.parse(e.data);
+      addLog("Analyzer", data.message);
+    });
+
+    es.addEventListener("architect_analysis_start", (e) => {
+      const data = JSON.parse(e.data);
+      addLog("Architect", data.message);
+    });
+
+    es.addEventListener("architect_analysis_done", async () => {
+      addLog("system", "Architectural analysis complete. Building refactoring plan...");
+      setSimulationStage("architecture");
+      const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
+      const statusData = await statusRes.json();
+      if (statusData.analysis?.refactors) {
+        setIssues(statusData.analysis.refactors.map(r => ({ ...r, type: "refactor", jobId })));
+      }
+      fetch(buildApiUrl('/api/architect/fixes'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobId })
+      });
+    });
+
+    es.addEventListener("architect_fixes_done", async () => {
+      addLog("Designer", "Refactoring plan finalized.");
+      setSimulationStage("completed");
+      setIsAnalyzing(false);
+      showToast("Architectural plan is ready!", "success");
+      const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
+      const statusData = await statusRes.json();
+      if (statusData.analysis?.refactors && statusData.fixes?.actions) {
+        const merged = statusData.analysis.refactors.map(ref => {
+          const action = statusData.fixes.actions.find(a => a.refactorId === ref.id);
+          return { ...ref, action, jobId, type: "refactor" };
+        });
+        setIssues(merged);
+      }
+      es.close();
+    });
+
+    es.addEventListener("analysis_done", async () => {
+      addLog("system", "Analysis complete. Generating fixes...");
+      setSimulationStage("architecture");
+      const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
+      const statusData = await statusRes.json();
+      if (statusData.analysis?.issues) {
+        setIssues(statusData.analysis.issues.map(i => ({ ...i, jobId })));
+      }
+      fetch(buildApiUrl('/api/fixes'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobId })
+      });
+    });
+
+    es.addEventListener("fixes_done", async () => {
+      addLog("Factory", "Fixes generated. Review the repair plan below.");
+      setSimulationStage("completed");
+      setIsAnalyzing(false);
+      showToast("Analysis complete!", "success");
+      const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
+      const statusData = await statusRes.json();
+      if (statusData.analysis?.issues && statusData.fixes?.fixes) {
+        const mergedIssues = statusData.analysis.issues.map(issue => {
+          const fix = statusData.fixes.fixes.find(f => f.issueId === issue.id);
+          return { ...issue, fix, jobId };
+        });
+        setIssues(mergedIssues);
+      }
+      es.close();
+    });
+
+    es.addEventListener("error", (e) => {
+      if (e.data) {
+        try {
+          const data = JSON.parse(e.data);
+          addLog("error", data.message);
+          showToast(`Error: ${data.message}`, "error");
+        } catch { /* ignore parse errors */ }
+      }
+      setIsAnalyzing(false);
+      setSimulationStage("completed");
+      es.close();
+    });
+
+    return () => es.close();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const runSimulation = useCallback(async () => {
     if (!uploadedZipFile) {
       addLog("system", "Error: No ZIP file uploaded.");
@@ -65,7 +179,8 @@ const LiveCodeOnline = () => {
       const formData = new FormData();
       formData.append('zip', uploadedZipFile);
 
-      const response = await fetch('http://localhost:4000/api/analyze', {
+      const endpoint = mode === "architect" ? "/api/architect/analyze" : "/api/analyze";
+      const response = await fetch(buildApiUrl(endpoint), {
         method: 'POST',
         body: formData
       });
@@ -73,7 +188,7 @@ const LiveCodeOnline = () => {
       const { jobId } = await response.json();
       addLog("system", `Job initialized: ${jobId}. Establishing real-time event stream...`);
 
-      const es = new EventSource(`http://localhost:4000/events/${jobId}`);
+      const es = new EventSource(buildEventUrl(jobId));
 
       es.addEventListener("analysis_start", (e) => {
         const data = JSON.parse(e.data);
@@ -85,19 +200,65 @@ const LiveCodeOnline = () => {
         addLog("Analyzer", data.message);
       });
 
+      // Architect Events
+      es.addEventListener("architect_analysis_start", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Architect", data.message);
+      });
+
+      es.addEventListener("architect_analysis_done", async () => {
+        addLog("system", "Architectural analysis complete. Building refactoring plan...");
+        setSimulationStage("architecture");
+
+        const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
+        const statusData = await statusRes.json();
+        if (statusData.analysis?.refactors) {
+          setIssues(statusData.analysis.refactors.map(r => ({ ...r, type: "refactor", jobId })));
+        }
+
+        fetch(buildApiUrl('/api/architect/fixes'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId })
+        });
+      });
+
+      es.addEventListener("architect_fixes_start", (e) => {
+        const data = JSON.parse(e.data);
+        addLog("Designer", data.message);
+      });
+
+      es.addEventListener("architect_fixes_done", async () => {
+        addLog("Designer", "Refactoring plan finalized.");
+        setSimulationStage("completed");
+        setIsAnalyzing(false);
+        showToast("Architectural plan is ready!", "success");
+
+        const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
+        const statusData = await statusRes.json();
+
+        if (statusData.analysis?.refactors && statusData.fixes?.actions) {
+          const merged = statusData.analysis.refactors.map(ref => {
+            const action = statusData.fixes.actions.find(a => a.refactorId === ref.id);
+            return { ...ref, action, jobId, type: "refactor" };
+          });
+          setIssues(merged);
+        }
+      });
+
       es.addEventListener("analysis_done", async () => {
         addLog("system", "Analysis complete. Now generating proposed fixes...");
         setSimulationStage("architecture");
 
         // Fetch issues after analysis is done
-        const statusRes = await fetch(`http://localhost:4000/api/status/${jobId}`);
+        const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
         const statusData = await statusRes.json();
         if (statusData.analysis?.issues) {
           setIssues(statusData.analysis.issues.map(i => ({ ...i, jobId })));
         }
 
         // Trigger Phase 2: Fixes
-        fetch('http://localhost:4000/api/fixes', {
+        fetch(buildApiUrl('/api/fixes'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ jobId })
@@ -116,7 +277,7 @@ const LiveCodeOnline = () => {
         showToast(t("toast.analysisComplete"), "success");
 
         // Refresh issues and MERGE with fixes
-        const statusRes = await fetch(`http://localhost:4000/api/status/${jobId}`);
+        const statusRes = await fetch(buildApiUrl(`/api/status/${jobId}`));
         const statusData = await statusRes.json();
 
         if (statusData.analysis?.issues && statusData.fixes?.fixes) {
@@ -141,11 +302,15 @@ const LiveCodeOnline = () => {
       });
 
       es.addEventListener("error", (e) => {
-        const data = JSON.parse(e.data);
-        addLog("error", data.message);
+        if (e.data) {
+          try {
+            const data = JSON.parse(e.data);
+            addLog("error", data.message);
+            showToast(`Error: ${data.message}`, "error");
+          } catch { /* ignore parse errors */ }
+        }
         setIsAnalyzing(false);
         setSimulationStage("completed");
-        showToast(`Error: ${data.message}`, "error");
         es.close();
       });
 
@@ -156,22 +321,20 @@ const LiveCodeOnline = () => {
       setSimulationStage("completed");
       showToast(`${t("toast.error")}: ${error.message}`, "error");
     }
-  }, [addLog, showToast, t, uploadedZipFile]);
+  }, [addLog, mode, showToast, t, uploadedZipFile]);
 
   const handleApplyFix = useCallback(async (issue) => {
     try {
       showToast("Applying fix globally...", "info");
       addLog("system", `Requesting global patch via Job ${issue.jobId}...`);
 
-      const response = await fetch('http://localhost:4000/api/patch', {
+      const res = await fetch(buildApiUrl(`/api/patch`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jobId: issue.jobId
-        })
+        body: JSON.stringify({ jobId: issue.jobId, issueId: issue.id })
       });
 
-      const result = await response.json();
+      const result = await res.json();
       if (!result.success) throw new Error("Patch initialization failed");
 
       addLog("Polisher", `Patch generation started for Job ${issue.jobId}. We'll notify you when ready.`);
@@ -347,18 +510,28 @@ const LiveCodeOnline = () => {
   return (
     <div className="min-h-screen pt-20 pb-10 px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto">
       <div className="text-center mb-8 md:mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 mb-4">
-          <Terminal className="w-4 h-4 text-accent" />
-          <span className="text-sm text-accent font-semibold">
-            Viacagentový systém aktívny
-          </span>
+        <div className="flex flex-col items-center mb-6">
+          <motion.img
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            src="/logo.png"
+            alt="RubberDuck Logo"
+            className="w-24 h-24 mb-4 drop-shadow-[0_0_20px_rgba(255,215,0,0.3)]"
+          />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+            <Zap className="w-4 h-4 text-primary animate-pulse" />
+            <span className="text-sm text-primary font-bold tracking-wider uppercase">
+              RubberDuck AI Engine v2.0
+            </span>
+          </div>
         </div>
-        <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-          Živý kódový <ShimmerText>Sandbox</ShimmerText>
+
+        <h1 className="text-4xl md:text-7xl font-black text-white mb-4 tracking-tighter">
+          RubberDuck<span className="text-primary">.Space</span>
         </h1>
-        <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
-          Nahrajte váš .zip kód a sledujte, ako naši AI agenti analyzujú, opravujú a
-          leštia ho v reálnom čase.
+        <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto font-medium">
+          The world&apos;s most advanced autonomous AI repair engine.
+          Upload your repository and let the duck fix your code.
         </p>
       </div>
 
@@ -415,16 +588,19 @@ const LiveCodeOnline = () => {
         >
           <div className="bg-surface/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
             <div className="p-4 md:p-6 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 bg-white/5">
-              <div className="text-center md:text-left">
-                <h2 className="text-xl md:text-2xl font-bold text-white">Prehľad projektu</h2>
-                <p className="text-gray-400 text-xs md:text-sm">Počiatočný automatizovaný audit dokončený.</p>
+              <div className="text-center md:text-left flex items-center gap-4">
+                <img src="/logo.png" className="w-10 h-10 opacity-80" alt="" />
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white">Project Ecosystem</h2>
+                  <p className="text-gray-400 text-xs md:text-sm">Initial autonomous audit completed.</p>
+                </div>
               </div>
               <button
                 onClick={runSimulation}
-                className="w-full md:w-auto px-6 py-2.5 bg-accent text-primary rounded-xl font-bold hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
+                className="btn-primary flex items-center gap-3"
               >
-                <Play className="w-4 h-4" />
-                Spustiť AI agentov
+                <Play className="w-5 h-5 fill-current" />
+                Launch Duck Analysis
               </button>
             </div>
             <div className="p-4 md:p-6">
@@ -548,10 +724,27 @@ const LiveCodeOnline = () => {
                 </h3>
 
                 {simulationStage === "idle" || simulationStage === "completed" ? (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-2 gap-1 p-1 bg-white/5 border border-white/10 rounded-xl">
+                      <button
+                        onClick={() => setMode("bug_hunter")}
+                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${mode === "bug_hunter" ? "bg-primary text-background" : "text-gray-400 hover:text-white"}`}
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        Hunter
+                      </button>
+                      <button
+                        onClick={() => setMode("architect")}
+                        className={`flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${mode === "architect" ? "bg-accent text-background" : "text-gray-400 hover:text-white"}`}
+                      >
+                        <Cpu className="w-3.5 h-3.5" />
+                        Architect
+                      </button>
+                    </div>
+
                     <button
                       onClick={runSimulation}
-                      className="w-full py-2.5 md:py-3 bg-accent text-primary rounded-xl font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 active:scale-95"
+                      className="w-full py-2.5 md:py-3 bg-accent text-background rounded-xl font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 active:scale-95"
                     >
                       {simulationStage === "completed" ? (
                         <>
@@ -574,7 +767,7 @@ const LiveCodeOnline = () => {
                             prompt("Enter Job ID to download:"); // Very fallback
 
                           if (jobId) {
-                            window.location.href = `http://localhost:4000/api/download/${jobId}`;
+                            window.location.href = buildApiUrl(`/api/download/${jobId}`);
                             showToast("Downloading fixed repository...", "success");
                           }
                         }}

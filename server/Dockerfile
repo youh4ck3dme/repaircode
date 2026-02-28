@@ -1,7 +1,12 @@
 FROM node:20-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY server ./server
+# Copy package files
+COPY server/package*.json ./server/
+# Install dependencies in the server directory
+WORKDIR /app/server
+RUN npm install --omit=dev
+# Copy the rest of the backend source code
+COPY server/ .
 EXPOSE 4000
-CMD ["node", "server/index.js"]
+# Run the entry point from the server directory
+CMD ["node", "index.js"]

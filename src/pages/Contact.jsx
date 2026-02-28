@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
-import ShimmerText from "../components/ShimmerText";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -43,8 +42,8 @@ const Contact = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              <ShimmerText className="orange">Kontaktujte nás</ShimmerText>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="heading-premium">Kontaktujte nás</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Máte zastaraný kód, ktorý potrebuje pozornosť? Porozprávajme sa o
@@ -218,7 +217,7 @@ const Contact = () => {
 
                   <button
                     type="submit"
-                    className="w-full px-6 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                    className="w-full px-6 py-4 bg-accent text-background rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105 flex items-center justify-center gap-2"
                   >
                     <Send className="w-5 h-5" />
                     Odoslať správu

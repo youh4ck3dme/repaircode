@@ -1,57 +1,56 @@
 import { motion } from "framer-motion";
-import { FileCode, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { FileSearch, Activity, ShieldCheck } from "lucide-react";
 
 const StatsDashboard = ({ stats, show }) => {
   if (!show) return null;
 
+  const items = [
+    {
+      label: "Naskenovaných súborov",
+      value: stats.filesProcessed,
+      icon: FileSearch,
+      color: "blue",
+      delay: 0
+    },
+    {
+      label: "Nájdených problémov",
+      value: stats.issuesFound,
+      icon: Activity,
+      color: "red",
+      delay: 0.1
+    },
+    {
+      label: "Opravených s RubberDuck",
+      value: stats.issuesFixed,
+      icon: ShieldCheck,
+      color: "green",
+      delay: 0.2
+    }
+  ];
+
   return (
-    <div className="grid grid-cols-3 gap-4 mb-6">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-surface/50 rounded-xl border border-white/10 p-4 flex flex-col items-center justify-center relative overflow-hidden group"
-      >
-        <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors duration-500" />
-        <FileCode className="w-6 h-6 text-blue-400 mb-2" />
-        <span className="text-3xl font-bold text-white mb-1">
-          {stats.filesProcessed}
-        </span>
-        <span className="text-xs text-gray-400 uppercase tracking-widest">
-          Naskenovaných súborov
-        </span>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-surface/50 rounded-xl border border-white/10 p-4 flex flex-col items-center justify-center relative overflow-hidden group"
-      >
-        <div className="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors duration-500" />
-        <AlertTriangle className="w-6 h-6 text-red-400 mb-2" />
-        <span className="text-3xl font-bold text-white mb-1">
-          {stats.issuesFound}
-        </span>
-        <span className="text-xs text-gray-400 uppercase tracking-widest">
-          Nájdených problémov
-        </span>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-surface/50 rounded-xl border border-white/10 p-4 flex flex-col items-center justify-center relative overflow-hidden group"
-      >
-        <div className="absolute inset-0 bg-green-500/5 group-hover:bg-green-500/10 transition-colors duration-500" />
-        <CheckCircle2 className="w-6 h-6 text-green-400 mb-2" />
-        <span className="text-3xl font-bold text-white mb-1">
-          {stats.issuesFixed}
-        </span>
-        <span className="text-xs text-gray-400 uppercase tracking-widest">
-          Opravených
-        </span>
-      </motion.div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+      {items.map((item, idx) => (
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: item.delay }}
+          className="bg-surface/60 backdrop-blur-xl border border-white/5 p-5 rounded-2xl flex items-center gap-4 group hover:border-primary/30 transition-all duration-300 shadow-xl shadow-black/20"
+        >
+          <div className={`p-3 rounded-xl bg-${item.color}-500/10 border border-${item.color}-500/20 group-hover:bg-${item.color}-500/20 transition-colors`}>
+            <item.icon className={`w-5 h-5 text-${item.color}-400`} />
+          </div>
+          <div>
+            <div className="text-2xl font-black text-white leading-none mb-1">
+              {item.value}
+            </div>
+            <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest leading-none">
+              {item.label}
+            </div>
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 };

@@ -8,4 +8,11 @@ backup_original
 coverage
 *.log
 .vercel
+.env
+.env.local
 .env*.local
+*.tar.gz
+*.zip
+api_results.txt
+root@*
+*.log

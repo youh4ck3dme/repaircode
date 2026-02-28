@@ -69,3 +69,9 @@
   --base-color: #f97316;
   --shimmer-color: #fb923c;
 }
+
+/* Black variant */
+.shimmer-text.black {
+  --base-color: #000000;
+  --shimmer-color: #1a1a1a;
+}

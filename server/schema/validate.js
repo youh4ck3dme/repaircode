@@ -16,7 +16,11 @@ function loadSchema(name) {
 const analysisSchema = loadSchema("analysis.json");
 const fixesSchema = loadSchema("fixes.json");
 const patchesSchema = loadSchema("patches.json");
+const architectSchema = loadSchema("architect.json");
+const architectFixesSchema = loadSchema("architectFixes.json");
 
 export const analysisValidate = ajv.compile(analysisSchema);
 export const fixesValidate = ajv.compile(fixesSchema);
 export const patchValidate = ajv.compile(patchesSchema);
+export const architectValidate = ajv.compile(architectSchema);
+export const architectFixesValidate = ajv.compile(architectFixesSchema);

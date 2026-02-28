@@ -109,10 +109,9 @@ const PremiumSelect = ({
           border-2 transition-all duration-300
           rounded-2xl px-6 py-4
           flex items-center justify-between
-          ${
-            isOpen
-              ? "border-white/50 shadow-[0_0_0_4px_rgba(255,255,255,0.1)]"
-              : "border-white/20 hover:border-white/40 shadow-lg hover:shadow-xl"
+          ${isOpen
+            ? "border-white/50 shadow-[0_0_0_4px_rgba(255,255,255,0.1)]"
+            : "border-white/20 hover:border-white/40 shadow-lg hover:shadow-xl"
           }
         `}
       >
@@ -129,7 +128,7 @@ const PremiumSelect = ({
               style={{ color: selected?.color }}
             />
           </motion.div>
-          <span className="text-white font-medium text-lg">
+          <span className="text-white font-medium text-[15px]">
             {selected ? selected.label : placeholder}
           </span>
         </div>
@@ -195,10 +194,9 @@ const PremiumSelect = ({
                         px-5 py-4 rounded-xl mb-2
                         flex items-center justify-between gap-4
                         transition-all duration-300
-                        ${
-                          isSelected
-                            ? "bg-gradient-to-r from-accent/30 to-purple-500/30 border border-white/20"
-                            : "hover:bg-white/10 hover:translate-x-2"
+                        ${isSelected
+                          ? "bg-gradient-to-r from-accent/30 to-purple-500/30 border border-white/20"
+                          : "hover:bg-white/10 hover:translate-x-2"
                         }
                       `}
                     >

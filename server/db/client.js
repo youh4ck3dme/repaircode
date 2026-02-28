@@ -5,15 +5,20 @@ import path from "path";
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = process.env.NODE_ENV === 'production' ? '/app/data/db' : path.join(__dirname, '..', 'data', 'db');
+const DB_PATH = path.join(DATA_DIR, 'repaircode.db');
 
 let dbInstance = null;
 
 export async function getDb() {
     if (dbInstance) return dbInstance;
 
-    const dbPath = path.join(__dirname, 'repaircode.db');
+    if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+
     dbInstance = await open({
-        filename: dbPath,
+        filename: DB_PATH,
         driver: sqlite3.Database
     });
 

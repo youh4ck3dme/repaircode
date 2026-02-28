@@ -3,10 +3,11 @@
     "services": "Služby",
     "process": "Postup",
     "aiSandbox": "AI Sandbox",
-    "about": "O nás",
+    "about": "O Rubberduck",
     "contact": "Kontakt",
     "getAudit": "Získať audit",
-    "install": "INŠTALOVAŤ"
+    "install": "INŠTALOVAŤ",
+    "spaceCode": "SpaceCode"
   },
   "home": {
     "hero": {
@@ -57,7 +58,7 @@
         },
         {
           "q": "Čo je AI Sandbox a je bezpečné ho použiť?",
-          "a": "AI Sandbox je živé demo prostredie, kde môžete nahrať .zip vašej kódovej základne a vidieť naše viacagentové analýzy v akcii. Žiadny kód sa neukladá — všetko beží v pamäti."
+          "a": "AI Sandbox je živé demo prostredie, kde môžete nahrať .zip vašej kódovej základne a vidieť naše viacagentové analýzy v akcii. Žiadny kód sa neukladá — všetko beží v pamäti na platforme Rubberduck.Space."
         },
         {
           "q": "Ponúkate priebežnú údržbu po oprave?",

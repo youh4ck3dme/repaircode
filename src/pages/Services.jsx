@@ -45,15 +45,14 @@ const PricingCard = ({ plan, index, isPopular }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`relative p-8 rounded-2xl border transition-all flex flex-col ${
-        isPopular
-          ? "bg-surface border-accent/50 shadow-lg shadow-accent/10"
-          : "bg-surface border-white/5 hover:border-accent/30"
-      }`}
+      className={`relative p-8 rounded-2xl border transition-all flex flex-col ${isPopular
+        ? "bg-surface border-accent/50 shadow-lg shadow-accent/10"
+        : "bg-surface border-white/5 hover:border-accent/30"
+        }`}
     >
       {isPopular && plan.badge && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-          <span className="px-4 py-1.5 bg-accent text-primary text-xs font-bold rounded-full shadow-lg shadow-accent/30">
+          <span className="px-4 py-1.5 bg-accent text-black text-xs font-bold rounded-full shadow-lg shadow-accent/30">
             {plan.badge}
           </span>
         </div>
@@ -81,17 +80,16 @@ const PricingCard = ({ plan, index, isPopular }) => {
 
       <Link
         to="/audit"
-        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
-          isPopular
-            ? "bg-accent text-primary hover:bg-white shadow-lg shadow-accent/20"
-            : "border border-white/20 text-white hover:bg-white/10"
-        }`}
+        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${isPopular
+          ? "bg-accent text-black hover:bg-white shadow-lg shadow-accent/20"
+          : "border border-white/20 text-white hover:bg-white/10"
+          }`}
       >
         {index === 0
           ? t("services.pricing.ctaStarter")
           : index === 1
-          ? t("services.pricing.ctaPro")
-          : t("services.pricing.ctaEnterprise")}
+            ? t("services.pricing.ctaPro")
+            : t("services.pricing.ctaEnterprise")}
         <ArrowRight className="w-4 h-4" />
       </Link>
     </motion.div>
@@ -111,11 +109,11 @@ const Pricing = () => {
           <h2 className="text-base text-accent font-semibold tracking-wide uppercase">
             Pricing
           </h2>
-          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-black sm:text-4xl">
             {t("services.pricing.heading")}{" "}
-            <ShimmerText>{t("services.pricing.headingHighlight")}</ShimmerText>
+            <ShimmerText className="black">{t("services.pricing.headingHighlight")}</ShimmerText>
           </p>
-          <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-400">
+          <p className="mt-4 max-w-2xl mx-auto text-xl text-white">
             {t("services.pricing.subheading")}
           </p>
         </div>
@@ -227,8 +225,8 @@ const Services = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Naše <ShimmerText className="purple">služby</ShimmerText>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="heading-premium">Naše služby</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Komplexné služby opravy a modernizácie kódu na transformáciu
@@ -253,18 +251,18 @@ const Services = () => {
       <Pricing />
 
       {/* CTA Section */}
-      <div className="py-20 bg-surface/30">
+      <div className="py-20 bg-primary/90">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-black mb-6">
             Ste pripravení modernizovať váš kód?
           </h2>
-          <p className="text-xl text-gray-400 mb-8">
+          <p className="text-xl text-black mb-8">
             Získajte bezplatný diagnostický audit a zistite, ako môžeme pomôcť
             transformovať vašu aplikáciu.
           </p>
           <Link
             to="/audit"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-primary rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-black rounded-lg font-bold text-lg hover:bg-white transition-all transform hover:scale-105"
           >
             Získať bezplatný audit
             <ArrowRight className="w-5 h-5" />
